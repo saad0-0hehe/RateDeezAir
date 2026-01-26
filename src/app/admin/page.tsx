@@ -63,7 +63,7 @@ export default function AdminPage() {
                 <h1 className="text-2xl font-bold text-white mb-4">Admin Access Required</h1>
                 <p className="text-slate-400 mb-6">Please login to access the admin panel.</p>
                 <a
-                    href="/auth/login"
+                    href="/api/auth/login"
                     className="inline-block px-6 py-3 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-medium shadow-lg shadow-sky-500/25 transition-all"
                 >
                     Login

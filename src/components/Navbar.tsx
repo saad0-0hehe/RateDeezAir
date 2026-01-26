@@ -51,7 +51,7 @@ export default function Navbar() {
                                     <p className="text-xs text-slate-400">{user.email}</p>
                                 </div>
                                 <a
-                                    href="/auth/logout"
+                                    href="/api/auth/logout"
                                     className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium transition-colors"
                                 >
                                     Logout
@@ -59,7 +59,7 @@ export default function Navbar() {
                             </div>
                         ) : (
                             <a
-                                href="/auth/login"
+                                href="/api/auth/login"
                                 className="px-4 py-2 rounded-lg bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white text-sm font-medium shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 transition-all"
                             >
                                 Login with Student Email

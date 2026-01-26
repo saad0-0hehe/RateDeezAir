@@ -188,7 +188,7 @@ export default function ProfessorDetailPage() {
                                 </button>
                             ) : (
                                 <a
-                                    href="/auth/login"
+                                    href="/api/auth/login"
                                     className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium transition-colors"
                                 >
                                     Login to Review
@@ -228,7 +228,7 @@ export default function ProfessorDetailPage() {
                                 </button>
                             ) : (
                                 <a
-                                    href="/auth/login"
+                                    href="/api/auth/login"
                                     className="inline-block px-6 py-3 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-medium shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 transition-all"
                                 >
                                     Login to add a review
