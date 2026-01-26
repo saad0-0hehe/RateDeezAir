@@ -169,7 +169,7 @@ export default function AdminPage() {
                                             <ReviewCard
                                                 key={review.id}
                                                 review={review}
-                                                showDelete
+                                                isAdmin={true}
                                                 onDelete={handleDeleteReview}
                                             />
                                         ))}

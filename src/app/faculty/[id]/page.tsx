@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import Link from 'next/link';
-import { getProfessorById, getReviewsByProfessorId, getAverageRating, addReviewWithEmail } from '@/lib/data';
+import { getProfessorById, getReviewsByProfessorId, getAverageRating, addReviewWithEmail, deleteReview, updateReview } from '@/lib/data';
 import { Professor, Review } from '@/lib/types';
 import ReviewCard from '@/components/ReviewCard';
 import ReviewForm from '@/components/ReviewForm';
@@ -66,6 +66,33 @@ export default function ProfessorDetailPage() {
         } catch (error) {
             console.error("Failed to submit review:", error);
             alert("Failed to submit review. Please try again.");
+        }
+    };
+
+    const handleDeleteReview = async (reviewId: string) => {
+        if (!confirm('Are you sure you want to delete this review?')) return;
+
+        const success = await deleteReview(reviewId);
+        if (success) {
+            setReviews(reviews.filter(r => r.id !== reviewId));
+            const newStats = await getAverageRating(professorId);
+            setStats(newStats);
+        } else {
+            alert('Failed to delete review.');
+        }
+    };
+
+    const handleEditReview = async (
+        reviewId: string,
+        updates: { rating: number; difficulty: number; wouldTakeAgain: boolean; comment: string }
+    ) => {
+        const updated = await updateReview(reviewId, updates);
+        if (updated) {
+            setReviews(reviews.map(r => r.id === reviewId ? updated : r));
+            const newStats = await getAverageRating(professorId);
+            setStats(newStats);
+        } else {
+            alert('Failed to update review.');
         }
     };
 
@@ -208,7 +235,13 @@ export default function ProfessorDetailPage() {
                     {reviews.length > 0 ? (
                         <div className="space-y-4">
                             {reviews.map((review) => (
-                                <ReviewCard key={review.id} review={review} />
+                                <ReviewCard
+                                    key={review.id}
+                                    review={review}
+                                    currentUserEmail={user?.email || undefined}
+                                    onDelete={handleDeleteReview}
+                                    onEdit={handleEditReview}
+                                />
                             ))}
                         </div>
                     ) : (

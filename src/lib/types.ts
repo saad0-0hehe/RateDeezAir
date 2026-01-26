@@ -19,6 +19,7 @@ export interface Review {
     wouldTakeAgain: boolean;
     comment: string;
     createdAt: string;
+    userEmail?: string; // For ownership checks (edit/delete own review)
 }
 
 export interface Department {

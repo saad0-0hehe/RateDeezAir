@@ -147,7 +147,33 @@ export async function deleteReview(reviewId: string): Promise<boolean> {
         .delete()
         .eq('id', reviewId);
 
+    if (error) {
+        console.error('Error deleting review:', error);
+    }
     return !error;
+}
+
+export async function updateReview(
+    reviewId: string,
+    updates: { rating: number; difficulty: number; wouldTakeAgain: boolean; comment: string }
+): Promise<Review | null> {
+    const { data, error } = await supabase
+        .from('reviews')
+        .update({
+            rating: updates.rating,
+            difficulty: updates.difficulty,
+            would_take_again: updates.wouldTakeAgain,
+            comment: updates.comment,
+        })
+        .eq('id', reviewId)
+        .select()
+        .single();
+
+    if (error) {
+        console.error('Error updating review:', error);
+        return null;
+    }
+    return mapReviewFromDb(data);
 }
 
 export async function getAverageRating(professorId: string): Promise<{ rating: number; difficulty: number; count: number }> {
@@ -229,6 +255,6 @@ function mapReviewFromDb(row: any): Review {
         wouldTakeAgain: row.would_take_again,
         comment: row.comment,
         createdAt: row.created_at,
-        // We might want to add userEmail to the Review type if we want to display it or use it for perms
+        userEmail: row.user_email,
     };
 }
