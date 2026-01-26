@@ -72,6 +72,30 @@ export default function AdminPage() {
         );
     }
 
+    // Check if user is admin
+    const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL || '242885@students.au.edu.pk';
+    const isAdmin = user.email === adminEmail;
+
+    if (!isAdmin) {
+        return (
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+                <div className="w-16 h-16 rounded-full bg-red-900/50 flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                    </svg>
+                </div>
+                <h1 className="text-2xl font-bold text-white mb-4">Access Denied</h1>
+                <p className="text-slate-400 mb-6">You don't have permission to access the admin panel.</p>
+                <a
+                    href="/"
+                    className="inline-block px-6 py-3 rounded-xl bg-slate-700 hover:bg-slate-600 text-white font-medium transition-all"
+                >
+                    Go Home
+                </a>
+            </div>
+        );
+    }
+
     const totalReviews = professorsWithReviews.reduce((sum, p) => sum + p.reviews.length, 0);
 
     return (
