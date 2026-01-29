@@ -22,6 +22,13 @@ export interface Review {
     userEmail?: string; // For ownership checks (edit/delete own review)
 }
 
+export interface Feedback {
+    id: string;
+    email: string;
+    message: string;
+    createdAt: string;
+}
+
 export interface Department {
     id: string;
     name: string;

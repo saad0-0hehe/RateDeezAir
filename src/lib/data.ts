@@ -328,3 +328,62 @@ function mapReviewFromDb(row: any): Review {
         userEmail: row.user_email,
     };
 }
+
+// Feedback functions
+import { Feedback } from './types';
+
+export async function getAllFeedback(): Promise<Feedback[]> {
+    const { data, error } = await supabase
+        .from('feedback')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        console.error('Error fetching feedback:', error);
+        return [];
+    }
+
+    return data.map((row: any) => ({
+        id: row.id,
+        email: row.email,
+        message: row.message,
+        createdAt: row.created_at,
+    }));
+}
+
+export async function addFeedback(email: string, message: string): Promise<Feedback | null> {
+    const { data, error } = await supabase
+        .from('feedback')
+        .insert({
+            email,
+            message,
+        })
+        .select()
+        .single();
+
+    if (error) {
+        console.error('Error adding feedback:', error);
+        return null;
+    }
+
+    return {
+        id: data.id,
+        email: data.email,
+        message: data.message,
+        createdAt: data.created_at,
+    };
+}
+
+export async function deleteFeedback(feedbackId: string): Promise<boolean> {
+    const { error } = await supabase
+        .from('feedback')
+        .delete()
+        .eq('id', feedbackId);
+
+    if (error) {
+        console.error('Error deleting feedback:', error);
+        return false;
+    }
+    return true;
+}
+
