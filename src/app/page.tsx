@@ -1,12 +1,16 @@
 import Link from 'next/link';
-import { getAllProfessorsWithStats } from '@/lib/data';
+import { getTopProfessors, getTotalReviewCount, getAllProfessors } from '@/lib/data';
+
+// Force dynamic rendering to always show fresh top professors
+export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  const professors = await getAllProfessorsWithStats();
-  const topProfessors = professors
-    .filter((p) => p.stats.count > 0)
-    .sort((a, b) => b.stats.rating - a.stats.rating)
-    .slice(0, 3);
+  // Optimized: fetch only top 3 professors and counts
+  const [topProfessors, reviewCount, professors] = await Promise.all([
+    getTopProfessors(3),
+    getTotalReviewCount(),
+    getAllProfessors(),
+  ]);
 
   return (
     <div className="min-h-screen">
@@ -52,7 +56,7 @@ export default async function Home() {
                 <p className="text-slate-500 text-sm mt-1">Professors</p>
               </div>
               <div className="text-center">
-                <p className="text-3xl md:text-4xl font-bold text-white">500+</p>
+                <p className="text-3xl md:text-4xl font-bold text-white">{reviewCount}+</p>
                 <p className="text-slate-500 text-sm mt-1">Reviews</p>
               </div>
               <div className="text-center">

@@ -232,6 +232,76 @@ export async function getAllProfessorsWithStats(): Promise<(Professor & { stats:
     });
 }
 
+// Optimized function to get only top professors (for home page)
+export async function getTopProfessors(limit: number = 3): Promise<(Professor & { stats: { rating: number; difficulty: number; count: number } })[]> {
+    // Get aggregated stats from reviews
+    const { data: reviewStats, error: statsError } = await supabase
+        .from('reviews')
+        .select('professor_id, rating, difficulty');
+
+    if (statsError || !reviewStats) {
+        console.error('Error fetching review stats:', statsError);
+        return [];
+    }
+
+    // Calculate stats per professor
+    const statsMap = new Map<string, { sumRating: number; sumDiff: number; count: number }>();
+    reviewStats.forEach((r: any) => {
+        const current = statsMap.get(r.professor_id) || { sumRating: 0, sumDiff: 0, count: 0 };
+        current.sumRating += r.rating;
+        current.sumDiff += r.difficulty;
+        current.count += 1;
+        statsMap.set(r.professor_id, current);
+    });
+
+    // Sort by average rating and get top professor IDs
+    const sortedProfIds = Array.from(statsMap.entries())
+        .filter(([, s]) => s.count > 0)
+        .map(([id, s]) => ({ id, avgRating: s.sumRating / s.count, stats: s }))
+        .sort((a, b) => b.avgRating - a.avgRating)
+        .slice(0, limit);
+
+    if (sortedProfIds.length === 0) return [];
+
+    // Fetch only the top professors
+    const { data: professors, error: profError } = await supabase
+        .from('professors')
+        .select('*')
+        .in('id', sortedProfIds.map(p => p.id));
+
+    if (profError || !professors) {
+        console.error('Error fetching top professors:', profError);
+        return [];
+    }
+
+    // Map and attach stats
+    return sortedProfIds.map(({ id, stats: s }) => {
+        const prof = professors.find((p: any) => p.id === id);
+        if (!prof) return null;
+        return {
+            ...mapProfessorFromDb(prof),
+            stats: {
+                rating: Math.round((s.sumRating / s.count) * 10) / 10,
+                difficulty: Math.round((s.sumDiff / s.count) * 10) / 10,
+                count: s.count
+            }
+        };
+    }).filter(Boolean) as (Professor & { stats: { rating: number; difficulty: number; count: number } })[];
+}
+
+// Get total review count (for stats display)
+export async function getTotalReviewCount(): Promise<number> {
+    const { count, error } = await supabase
+        .from('reviews')
+        .select('*', { count: 'exact', head: true });
+
+    if (error) {
+        console.error('Error counting reviews:', error);
+        return 0;
+    }
+    return count || 0;
+}
+
 // Helpers
 function mapProfessorFromDb(row: any): Professor {
     return {
