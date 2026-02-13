@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useUser } from '@auth0/nextjs-auth0/client';
-import { getAllProfessors, getAllReviews, deleteReview, getAllFeedback, deleteFeedback } from '@/lib/data';
-import { Professor, Review, Feedback } from '@/lib/types';
+import { getAllProfessors, getAllReviews, deleteReview, getAllFeedback, deleteFeedback, getAllVisitingFacultyRequests, approveVisitingFacultyRequest, rejectVisitingFacultyRequest } from '@/lib/data';
+import { Professor, Review, Feedback, VisitingFacultyRequest } from '@/lib/types';
 import ReviewCard from '@/components/ReviewCard';
 import Link from 'next/link';
 
@@ -15,13 +15,15 @@ export default function AdminPage() {
     const { user, isLoading } = useUser();
     const [professorsWithReviews, setProfessorsWithReviews] = useState<ProfessorWithReviews[]>([]);
     const [selectedProfessor, setSelectedProfessor] = useState<string | null>(null);
-    const [activeTab, setActiveTab] = useState<'reviews' | 'feedback'>('reviews');
+    const [activeTab, setActiveTab] = useState<'reviews' | 'feedback' | 'faculty-requests'>('reviews');
     const [feedbackList, setFeedbackList] = useState<Feedback[]>([]);
+    const [facultyRequests, setFacultyRequests] = useState<VisitingFacultyRequest[]>([]);
 
     useEffect(() => {
         if (user) {
             loadData();
             loadFeedback();
+            loadFacultyRequests();
         }
     }, [user]);
 
@@ -42,6 +44,29 @@ export default function AdminPage() {
     const loadFeedback = async () => {
         const feedback = await getAllFeedback();
         setFeedbackList(feedback);
+    };
+
+    const loadFacultyRequests = async () => {
+        const requests = await getAllVisitingFacultyRequests();
+        setFacultyRequests(requests);
+    };
+
+    const handleApproveRequest = async (requestId: string) => {
+        if (confirm('Approve this faculty request? This will add the person to the faculty directory.')) {
+            const success = await approveVisitingFacultyRequest(requestId);
+            if (success) {
+                loadFacultyRequests();
+            } else {
+                alert('Failed to approve request. The professor may already exist in the directory.');
+            }
+        }
+    };
+
+    const handleRejectRequest = async (requestId: string) => {
+        if (confirm('Reject this faculty request?')) {
+            await rejectVisitingFacultyRequest(requestId);
+            loadFacultyRequests();
+        }
     };
 
     const handleDeleteReview = async (reviewId: string) => {
@@ -146,8 +171,8 @@ export default function AdminPage() {
                 <button
                     onClick={() => setActiveTab('reviews')}
                     className={`px-5 py-2.5 rounded-xl font-medium transition-all ${activeTab === 'reviews'
-                            ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/25'
-                            : 'bg-slate-800/50 text-slate-400 hover:text-white border border-slate-700/50'
+                        ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/25'
+                        : 'bg-slate-800/50 text-slate-400 hover:text-white border border-slate-700/50'
                         }`}
                 >
                     Reviews
@@ -155,11 +180,25 @@ export default function AdminPage() {
                 <button
                     onClick={() => setActiveTab('feedback')}
                     className={`px-5 py-2.5 rounded-xl font-medium transition-all ${activeTab === 'feedback'
-                            ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/25'
-                            : 'bg-slate-800/50 text-slate-400 hover:text-white border border-slate-700/50'
+                        ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/25'
+                        : 'bg-slate-800/50 text-slate-400 hover:text-white border border-slate-700/50'
                         }`}
                 >
                     Feedback ({feedbackList.length})
+                </button>
+                <button
+                    onClick={() => setActiveTab('faculty-requests')}
+                    className={`px-5 py-2.5 rounded-xl font-medium transition-all relative ${activeTab === 'faculty-requests'
+                        ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/25'
+                        : 'bg-slate-800/50 text-slate-400 hover:text-white border border-slate-700/50'
+                        }`}
+                >
+                    Faculty Requests
+                    {facultyRequests.filter(r => r.status === 'pending').length > 0 && (
+                        <span className="ml-2 px-2 py-0.5 rounded-full bg-purple-500 text-white text-xs font-bold">
+                            {facultyRequests.filter(r => r.status === 'pending').length}
+                        </span>
+                    )}
                 </button>
             </div>
 
@@ -272,6 +311,104 @@ export default function AdminPage() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                             </svg>
                             <p className="text-slate-400">No feedback received yet.</p>
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {/* Faculty Requests Tab */}
+            {activeTab === 'faculty-requests' && (
+                <div className="space-y-6">
+                    <h2 className="text-xl font-semibold text-white">Visiting Faculty Requests</h2>
+
+                    {facultyRequests.length > 0 ? (
+                        <div className="space-y-4">
+                            {facultyRequests.map((request) => (
+                                <div key={request.id} className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-5">
+                                    <div className="flex items-start justify-between gap-4">
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-center gap-3 mb-3">
+                                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-indigo-600 flex items-center justify-center flex-shrink-0">
+                                                    <span className="text-white font-bold text-sm">
+                                                        {request.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                                                    </span>
+                                                </div>
+                                                <div>
+                                                    <h3 className="text-white font-medium">{request.name}</h3>
+                                                    <p className="text-slate-400 text-sm">{request.designation}</p>
+                                                </div>
+                                                <span className={`ml-auto px-3 py-1 rounded-full text-xs font-medium flex-shrink-0 ${request.status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' :
+                                                        request.status === 'approved' ? 'bg-green-500/20 text-green-400' :
+                                                            'bg-red-500/20 text-red-400'
+                                                    }`}>
+                                                    {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                                                </span>
+                                            </div>
+
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm mb-3">
+                                                <div>
+                                                    <span className="text-slate-500">Department:</span>{' '}
+                                                    <span className="text-sky-400">{request.department}</span>
+                                                </div>
+                                                {request.email && (
+                                                    <div>
+                                                        <span className="text-slate-500">Email:</span>{' '}
+                                                        <span className="text-slate-300">{request.email}</span>
+                                                    </div>
+                                                )}
+                                                {request.qualifications && (
+                                                    <div className="sm:col-span-2">
+                                                        <span className="text-slate-500">Qualifications:</span>{' '}
+                                                        <span className="text-slate-300">{request.qualifications}</span>
+                                                    </div>
+                                                )}
+                                                <div>
+                                                    <span className="text-slate-500">Submitted by:</span>{' '}
+                                                    <span className="text-slate-300">{request.submittedByEmail}</span>
+                                                </div>
+                                                <div>
+                                                    <span className="text-slate-500">Date:</span>{' '}
+                                                    <span className="text-slate-300">
+                                                        {new Date(request.createdAt).toLocaleDateString('en-US', {
+                                                            year: 'numeric', month: 'short', day: 'numeric',
+                                                        })}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {request.status === 'pending' && (
+                                        <div className="flex items-center gap-3 pt-3 border-t border-slate-700/50">
+                                            <button
+                                                onClick={() => handleApproveRequest(request.id)}
+                                                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-green-600/20 text-green-400 hover:bg-green-600/30 transition-colors text-sm font-medium"
+                                            >
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                </svg>
+                                                Approve & Add to Directory
+                                            </button>
+                                            <button
+                                                onClick={() => handleRejectRequest(request.id)}
+                                                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-900/30 text-red-400 hover:bg-red-900/50 transition-colors text-sm font-medium"
+                                            >
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                                Reject
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-8 text-center">
+                            <svg className="w-12 h-12 text-slate-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                            </svg>
+                            <p className="text-slate-400">No faculty requests yet.</p>
                         </div>
                     )}
                 </div>

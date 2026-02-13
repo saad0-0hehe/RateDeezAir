@@ -387,3 +387,134 @@ export async function deleteFeedback(feedbackId: string): Promise<boolean> {
     return true;
 }
 
+// Visiting Faculty Request functions
+import { VisitingFacultyRequest } from './types';
+
+function mapVisitingFacultyRequestFromDb(row: any): VisitingFacultyRequest {
+    return {
+        id: row.id,
+        name: row.name,
+        designation: row.designation,
+        department: row.department,
+        email: row.email,
+        qualifications: row.qualifications,
+        submittedByEmail: row.submitted_by_email,
+        status: row.status,
+        createdAt: row.created_at,
+    };
+}
+
+export async function addVisitingFacultyRequest(
+    request: { name: string; designation: string; department: string; email?: string; qualifications?: string },
+    submitterEmail: string
+): Promise<VisitingFacultyRequest | null> {
+    const { data, error } = await supabase
+        .from('visiting_faculty_requests')
+        .insert({
+            name: request.name,
+            designation: request.designation,
+            department: request.department,
+            email: request.email || null,
+            qualifications: request.qualifications || null,
+            submitted_by_email: submitterEmail,
+        })
+        .select()
+        .single();
+
+    if (error) {
+        console.error('Error adding visiting faculty request:', error);
+        return null;
+    }
+    return mapVisitingFacultyRequestFromDb(data);
+}
+
+export async function getAllVisitingFacultyRequests(): Promise<VisitingFacultyRequest[]> {
+    const { data, error } = await supabase
+        .from('visiting_faculty_requests')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        console.error('Error fetching visiting faculty requests:', error);
+        return [];
+    }
+    return data.map(mapVisitingFacultyRequestFromDb);
+}
+
+export async function getPendingVisitingFacultyCount(): Promise<number> {
+    const { count, error } = await supabase
+        .from('visiting_faculty_requests')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'pending');
+
+    if (error) {
+        console.error('Error counting pending requests:', error);
+        return 0;
+    }
+    return count || 0;
+}
+
+export async function approveVisitingFacultyRequest(requestId: string): Promise<boolean> {
+    // First get the request details
+    const { data: request, error: fetchError } = await supabase
+        .from('visiting_faculty_requests')
+        .select('*')
+        .eq('id', requestId)
+        .single();
+
+    if (fetchError || !request) {
+        console.error('Error fetching request for approval:', fetchError);
+        return false;
+    }
+
+    // Generate a professor ID from the name (slug format matching existing IDs)
+    const profId = request.name
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .trim();
+
+    // Insert into professors table
+    const { error: insertError } = await supabase
+        .from('professors')
+        .insert({
+            id: profId,
+            name: request.name,
+            designation: request.designation,
+            department: request.department,
+            email: request.email,
+            qualifications: request.qualifications,
+        });
+
+    if (insertError) {
+        console.error('Error inserting professor:', insertError);
+        return false;
+    }
+
+    // Mark request as approved
+    const { error: updateError } = await supabase
+        .from('visiting_faculty_requests')
+        .update({ status: 'approved' })
+        .eq('id', requestId);
+
+    if (updateError) {
+        console.error('Error updating request status:', updateError);
+        return false;
+    }
+
+    return true;
+}
+
+export async function rejectVisitingFacultyRequest(requestId: string): Promise<boolean> {
+    const { error } = await supabase
+        .from('visiting_faculty_requests')
+        .update({ status: 'rejected' })
+        .eq('id', requestId);
+
+    if (error) {
+        console.error('Error rejecting request:', error);
+        return false;
+    }
+    return true;
+}

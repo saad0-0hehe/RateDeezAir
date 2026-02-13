@@ -36,6 +36,11 @@ export default function Navbar() {
                         <Link href="/feedback" className="text-slate-300 hover:text-white transition-colors">
                             Feedback
                         </Link>
+                        {user && (
+                            <Link href="/add-faculty" className="text-slate-300 hover:text-white transition-colors">
+                                Add Faculty
+                            </Link>
+                        )}
                         {user && user.email === (process.env.NEXT_PUBLIC_ADMIN_EMAIL || '242885@students.au.edu.pk') && (
                             <Link href="/admin" className="text-slate-300 hover:text-white transition-colors">
                                 Admin

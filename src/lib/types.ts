@@ -29,6 +29,18 @@ export interface Feedback {
     createdAt: string;
 }
 
+export interface VisitingFacultyRequest {
+    id: string;
+    name: string;
+    designation: string;
+    department: string;
+    email?: string;
+    qualifications?: string;
+    submittedByEmail: string;
+    status: 'pending' | 'approved' | 'rejected';
+    createdAt: string;
+}
+
 export interface Department {
     id: string;
     name: string;
