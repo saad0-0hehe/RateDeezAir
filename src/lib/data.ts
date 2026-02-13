@@ -258,7 +258,7 @@ export async function getTopProfessors(limit: number = 3): Promise<(Professor & 
     const sortedProfIds = Array.from(statsMap.entries())
         .filter(([, s]) => s.count > 0)
         .map(([id, s]) => ({ id, avgRating: s.sumRating / s.count, stats: s }))
-        .sort((a, b) => b.avgRating - a.avgRating)
+        .sort((a, b) => b.avgRating - a.avgRating || b.stats.count - a.stats.count)
         .slice(0, limit);
 
     if (sortedProfIds.length === 0) return [];
