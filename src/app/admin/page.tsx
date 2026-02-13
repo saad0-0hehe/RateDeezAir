@@ -16,6 +16,7 @@ export default function AdminPage() {
     const [professorsWithReviews, setProfessorsWithReviews] = useState<ProfessorWithReviews[]>([]);
     const [selectedProfessor, setSelectedProfessor] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<'reviews' | 'feedback' | 'faculty-requests'>('reviews');
+    const [reviewSortOrder, setReviewSortOrder] = useState<'newest' | 'oldest'>('newest');
     const [feedbackList, setFeedbackList] = useState<Feedback[]>([]);
     const [facultyRequests, setFacultyRequests] = useState<VisitingFacultyRequest[]>([]);
 
@@ -205,7 +206,18 @@ export default function AdminPage() {
             {/* Reviews Tab */}
             {activeTab === 'reviews' && (
                 <div className="space-y-6">
-                    <h2 className="text-xl font-semibold text-white">Reviews by Professor</h2>
+                    <div className="flex items-center justify-between">
+                        <h2 className="text-xl font-semibold text-white">Reviews by Professor</h2>
+                        <button
+                            onClick={() => setReviewSortOrder(reviewSortOrder === 'newest' ? 'oldest' : 'newest')}
+                            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700/50 text-slate-400 hover:text-white hover:border-slate-600 text-sm transition-all"
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={reviewSortOrder === 'newest' ? 'M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12' : 'M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4'} />
+                            </svg>
+                            {reviewSortOrder === 'newest' ? 'Newest First' : 'Oldest First'}
+                        </button>
+                    </div>
 
                     {professorsWithReviews.length > 0 ? (
                         <div className="space-y-4">
@@ -246,14 +258,20 @@ export default function AdminPage() {
                                     {/* Reviews */}
                                     {selectedProfessor === professor.id && (
                                         <div className="p-4 pt-0 space-y-4">
-                                            {professor.reviews.map((review) => (
-                                                <ReviewCard
-                                                    key={review.id}
-                                                    review={review}
-                                                    isAdmin={true}
-                                                    onDelete={handleDeleteReview}
-                                                />
-                                            ))}
+                                            {[...professor.reviews]
+                                                .sort((a, b) => {
+                                                    const dateA = new Date(a.createdAt).getTime();
+                                                    const dateB = new Date(b.createdAt).getTime();
+                                                    return reviewSortOrder === 'newest' ? dateB - dateA : dateA - dateB;
+                                                })
+                                                .map((review) => (
+                                                    <ReviewCard
+                                                        key={review.id}
+                                                        review={review}
+                                                        isAdmin={true}
+                                                        onDelete={handleDeleteReview}
+                                                    />
+                                                ))}
                                         </div>
                                     )}
                                 </div>
@@ -338,8 +356,8 @@ export default function AdminPage() {
                                                     <p className="text-slate-400 text-sm">{request.designation}</p>
                                                 </div>
                                                 <span className={`ml-auto px-3 py-1 rounded-full text-xs font-medium flex-shrink-0 ${request.status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' :
-                                                        request.status === 'approved' ? 'bg-green-500/20 text-green-400' :
-                                                            'bg-red-500/20 text-red-400'
+                                                    request.status === 'approved' ? 'bg-green-500/20 text-green-400' :
+                                                        'bg-red-500/20 text-red-400'
                                                     }`}>
                                                     {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
                                                 </span>

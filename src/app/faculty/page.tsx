@@ -1,16 +1,40 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { getAllProfessorsWithStats } from '@/lib/data';
 import { DEPARTMENTS, Professor } from '@/lib/types';
 import FacultyCard from '@/components/FacultyCard';
 import Link from 'next/link';
 
 export default function FacultyPage() {
-    const [searchQuery, setSearchQuery] = useState('');
-    const [selectedDepartment, setSelectedDepartment] = useState('all');
+    const searchParams = useSearchParams();
+    const router = useRouter();
+
+    // Initialize state from URL params so it persists across navigation
+    const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
+    const [selectedDepartment, setSelectedDepartment] = useState(searchParams.get('dept') || 'all');
     const [allProfessors, setAllProfessors] = useState<(Professor & { stats: any })[]>([]);
     const [loading, setLoading] = useState(true);
+
+    // Sync state changes to URL (without full page reload)
+    const updateURL = useCallback((query: string, dept: string) => {
+        const params = new URLSearchParams();
+        if (query) params.set('q', query);
+        if (dept && dept !== 'all') params.set('dept', dept);
+        const paramString = params.toString();
+        router.replace(`/faculty${paramString ? `?${paramString}` : ''}`, { scroll: false });
+    }, [router]);
+
+    const handleSearchChange = (value: string) => {
+        setSearchQuery(value);
+        updateURL(value, selectedDepartment);
+    };
+
+    const handleDepartmentChange = (value: string) => {
+        setSelectedDepartment(value);
+        updateURL(searchQuery, value);
+    };
 
     useEffect(() => {
         async function loadData() {
@@ -87,7 +111,7 @@ export default function FacultyPage() {
                             type="text"
                             placeholder="Search by name or department..."
                             value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onChange={(e) => handleSearchChange(e.target.value)}
                             className="w-full pl-12 pr-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
                         />
                     </div>
@@ -97,7 +121,7 @@ export default function FacultyPage() {
                 <div className="sm:w-64">
                     <select
                         value={selectedDepartment}
-                        onChange={(e) => setSelectedDepartment(e.target.value)}
+                        onChange={(e) => handleDepartmentChange(e.target.value)}
                         className="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent appearance-none cursor-pointer"
                     >
                         <option value="all">All Departments</option>
@@ -135,3 +159,4 @@ export default function FacultyPage() {
         </div>
     );
 }
+
