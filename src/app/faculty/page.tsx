@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { getAllProfessorsWithStats } from '@/lib/data';
 import { DEPARTMENTS, Professor } from '@/lib/types';
 import FacultyCard from '@/components/FacultyCard';
+import Link from 'next/link';
 
 export default function FacultyPage() {
     const [searchQuery, setSearchQuery] = useState('');
@@ -48,9 +49,20 @@ export default function FacultyPage() {
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {/* Header */}
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold text-white mb-2">Faculty Directory</h1>
-                <p className="text-slate-400">Browse and rate professors at Air University Islamabad</p>
+            <div className="flex items-start justify-between mb-8">
+                <div>
+                    <h1 className="text-3xl font-bold text-white mb-2">Faculty Directory</h1>
+                    <p className="text-slate-400">Browse and rate professors at Air University Islamabad</p>
+                </div>
+                <Link
+                    href="/add-faculty"
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-purple-500/10 border border-purple-500/30 hover:border-purple-500/60 text-purple-400 hover:text-purple-300 text-sm font-medium transition-all flex-shrink-0"
+                >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                    </svg>
+                    Add Faculty
+                </Link>
             </div>
 
             {/* Filters */}
