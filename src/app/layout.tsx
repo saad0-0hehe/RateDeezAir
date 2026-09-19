@@ -60,15 +60,30 @@ export const metadata: Metadata = {
   },
 };
 
+// Inline script: run before hydration to avoid FOUC (flash of wrong theme)
+const themeScript = `
+(function() {
+  try {
+    var stored = localStorage.getItem('rda-theme');
+    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var dark = stored === 'dark' || (stored === null && prefersDark);
+    if (dark) document.documentElement.classList.add('dark');
+    else document.documentElement.classList.remove('dark');
+  } catch(e) {}
+})();
+`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/logo.png" />
+        {/* Theme script — must run before page paint to prevent flash */}
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className={`${ibmPlexSans.variable} antialiased`} style={{ fontFamily: "'IBM Plex Sans', system-ui, sans-serif" }}>
         <Auth0Provider>

@@ -1,20 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;700&display=swap');
 @import "tailwindcss";
 
+/* ── Light mode tokens (default) ─────────────────────────────────── */
 :root {
-  /* Color tokens */
-  --color-bg:         #F5F2EE;
-  --color-bg-subtle:  #EDEBE6;
-  --color-ink:        #1A1A1A;
-  --color-ink-2:      #333333;   /* darkened from #4A4A4A for clearer 3-tier hierarchy */
-  --color-ink-3:      #888480;
-  --color-border:     #D4CFC9;
-  --color-blue:       #1B6FA3;
+  --color-bg:          #F5F2EE;
+  --color-bg-subtle:   #EDEBE6;
+  --color-ink:         #1A1A1A;
+  --color-ink-2:       #333333;
+  --color-ink-3:       #888480;
+  --color-border:      #D4CFC9;
+  --color-blue:        #1B6FA3;
   --color-blue-decorative: #2086BF;
-  --color-blue-light: #E7F1F7;
-  --color-green:      #2D6A4F;
-  --color-amber:      #9B6E00;
-  --color-red-low:    #B3261E;
+  --color-blue-light:  #E7F1F7;
+  --color-green:       #2D6A4F;
+  --color-amber:       #9B6E00;
+  --color-red-low:     #B3261E;
+
+  /* Card surface */
+  --color-surface:     #ffffff;
 
   /* Radius tokens */
   --radius-sm: 4px;
@@ -22,12 +25,38 @@
   --radius-full: 9999px;
 }
 
+/* ── Dark mode tokens ─────────────────────────────────────────────── */
+/* Applied when <html class="dark"> is set */
+.dark {
+  --color-bg:          #16150F;
+  --color-bg-subtle:   #201F19;
+  --color-ink:         #F5F2EE;
+  --color-ink-2:       #B8B3AB;
+  --color-ink-3:       #837E76;
+  --color-border:      #33322B;
+  --color-blue:        #4A9FD4;
+  --color-blue-decorative: #5BB0E5;
+  --color-blue-light:  #1C2E3A;
+  --color-green:       #4C9B7A;
+  --color-amber:       #D4A23B;
+  --color-red-low:     #E05B52;
+
+  /* Card surface — slightly elevated above bg */
+  --color-surface:     #1E1D16;
+}
+
+/* ── Base styles ─────────────────────────────────────────────────── */
 html, body {
   background-color: var(--color-bg);
   color: var(--color-ink);
   font-family: 'IBM Plex Sans', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Smooth theme transitions — only for colour properties, not layout */
+html {
+  transition: background-color 200ms ease, color 200ms ease;
 }
 
 /* Scrollbar */
@@ -42,7 +71,7 @@ html, body {
 .rda-card-row {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  background-color: #fff;
+  background-color: var(--color-surface);
   transition: border-color 150ms ease, background-color 150ms ease;
 }
 .rda-card-row:hover {
@@ -54,7 +83,7 @@ html, body {
 .rda-search-input {
   border: 2px solid var(--color-border);
   border-radius: var(--radius-sm) 0 0 var(--radius-sm);
-  background-color: #fff;
+  background-color: var(--color-surface);
   transition: border-color 150ms ease;
 }
 .rda-search-input:focus-within {
@@ -71,7 +100,6 @@ html, body {
 }
 
 /* ── Section heading accent rule ─────────────────────────────────── */
-/* Usage: <div class="rda-section-rule"></div> placed after a heading */
 .rda-section-rule {
   width: 2rem;
   height: 3px;
@@ -90,6 +118,18 @@ html, body {
   border-radius: 1px;
 }
 
+/* ── Dark mode card surface overrides ───────────────────────────── */
+/* Form cards and white-background panels pick up --color-surface */
+.dark .rda-card-row {
+  background-color: var(--color-surface);
+}
+
+/* Form/input cards with explicit white bg — override in dark mode */
+.dark [style*="background-color: #fff"],
+.dark [style*="backgroundColor: '#fff'"] {
+  background-color: var(--color-surface) !important;
+}
+
 /* ── Animations ───────────────────────────────────────────────────── */
 
 @keyframes fadeIn {
@@ -105,4 +145,35 @@ html, body {
 @keyframes progress {
   from { width: 0%; }
   to   { width: 100%; }
+}
+
+/* ── Dark mode surface overrides ─────────────────────────────────── */
+/* These override hard-coded #fff backgroundColor values in components  */
+/* without needing to touch every TSX file.                             */
+
+.dark input,
+.dark select,
+.dark textarea {
+  background-color: var(--color-surface) !important;
+  color: var(--color-ink) !important;
+  color-scheme: dark;
+}
+
+/* Form card containers (white card wrappers in forms) */
+.dark .rda-card-row,
+.dark form[style],
+.dark [class*="p-6"][style*="background"] {
+  background-color: var(--color-surface);
+}
+
+/* The "Submit Another" button and similar bare white btn surfaces */
+.dark button[style*="background-color: #fff"],
+.dark button[style*="backgroundColor: '#fff'"] {
+  background-color: var(--color-surface) !important;
+  color: var(--color-ink) !important;
+}
+
+/* ReviewCard, ProfessorDetail, FeedbackForm white card panels */
+.dark [style*="backgroundColor: '#fff'"] {
+  background-color: var(--color-surface) !important;
 }

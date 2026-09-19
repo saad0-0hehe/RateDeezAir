@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useUser } from '@auth0/nextjs-auth0/client';
+import ThemeToggle from '@/components/ThemeToggle';
 
 const ALLOWED_DOMAIN = '@students.au.edu.pk';
 
@@ -173,14 +174,23 @@ export default function Navbar() {
                     </div>
 
                     {/* Auth Section */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
+                        {/* Theme toggle — isolated Client Component */}
+                        <ThemeToggle />
+
+                        {/* Vertical divider — same style as hero stats row */}
+                        <div
+                            className="self-stretch"
+                            style={{ width: '1px', backgroundColor: 'var(--color-border)' }}
+                        />
+
                         {isLoading ? (
                             <div
-                                className="w-8 h-8 animate-pulse"
+                                className="w-8 h-8 animate-pulse ml-1"
                                 style={{ backgroundColor: 'var(--color-border)', borderRadius: 'var(--radius-full)' }}
                             />
                         ) : user ? (
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-3 ml-1">
                                 <div className="hidden sm:block text-right">
                                     <p className="text-xs" style={{ color: 'var(--color-ink-2)' }}>
                                         {user.email}
@@ -201,7 +211,7 @@ export default function Navbar() {
                         ) : (
                             <a
                                 href="/auth/login"
-                                className="text-sm font-medium px-4 py-1.5 transition-colors"
+                                className="text-sm font-medium px-4 py-1.5 ml-1 transition-colors"
                                 style={{
                                     color: 'var(--color-blue)',
                                     border: '1px solid var(--color-blue)',
