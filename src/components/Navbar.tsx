@@ -29,68 +29,93 @@ export default function Navbar() {
     if (invalidEmail) {
         return (
             <>
-                <nav className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-b border-slate-700/50 backdrop-blur-lg">
+                <nav
+                    style={{ backgroundColor: 'var(--color-bg)', borderBottom: '1px solid var(--color-border)' }}
+                    className="fixed top-0 left-0 right-0 z-50"
+                >
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="flex items-center justify-between h-16">
                             <Link href="/" className="flex items-center gap-3">
-                                <div className="w-12 h-12 rounded-xl overflow-hidden shadow-lg">
+                                <div className="w-10 h-10 overflow-hidden" style={{ borderRadius: 'var(--radius-md)' }}>
                                     <img src="/logo.png" alt="RateDeezAir Logo" className="w-full h-full object-cover" />
                                 </div>
-                                <div className="hidden sm:block">
-                                    <span className="text-white font-semibold text-lg">RateDeezAir</span>
-                                    <span className="text-sky-400 text-xs block -mt-1">Rate Your Professors</span>
-                                </div>
+                                <span className="hidden sm:block font-bold text-lg" style={{ color: 'var(--color-ink)' }}>
+                                    RateDeezAir
+                                </span>
                             </Link>
                         </div>
                     </div>
                 </nav>
-                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/95 backdrop-blur-sm">
-                    <div className="bg-slate-800 rounded-2xl border border-red-500/30 p-8 max-w-md mx-4 text-center animate-fade-in">
-                        <div className="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mx-auto mb-4">
-                            <svg className="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                            </svg>
-                        </div>
-                        <h2 className="text-xl font-bold text-white mb-2">Student Email Required</h2>
-                        <p className="text-slate-400 mb-2">
-                            Only <span className="text-sky-400 font-medium">@students.au.edu.pk</span> emails are allowed.
+                {/* Invalid email overlay */}
+                <div
+                    className="fixed inset-0 z-[100] flex items-center justify-center"
+                    style={{ backgroundColor: 'rgba(245,242,238,0.97)' }}
+                >
+                    <div
+                        className="p-8 max-w-md mx-4 text-center animate-fade-in"
+                        style={{
+                            backgroundColor: 'var(--color-bg)',
+                            border: '1px solid var(--color-border)',
+                            borderRadius: 'var(--radius-md)',
+                        }}
+                    >
+                        <h2 className="text-xl font-bold mb-2" style={{ color: 'var(--color-ink)' }}>
+                            Student Email Required
+                        </h2>
+                        <p className="text-sm mb-1" style={{ color: 'var(--color-ink-2)' }}>
+                            Only{' '}
+                            <span style={{ color: 'var(--color-blue)', fontWeight: 500 }}>
+                                @students.au.edu.pk
+                            </span>{' '}
+                            emails are allowed.
                         </p>
-                        <p className="text-slate-500 text-sm mb-4">
-                            You signed in with <span className="text-red-400">{user?.email}</span>
+                        <p className="text-sm mb-4" style={{ color: 'var(--color-ink-3)' }}>
+                            You signed in with{' '}
+                            <span style={{ color: 'var(--color-red-low)' }}>{user?.email}</span>
                         </p>
-                        <p className="text-slate-500 text-sm">Logging you out automatically...</p>
-                        <div className="mt-4">
-                            <div className="h-1 bg-slate-700 rounded-full overflow-hidden">
-                                <div className="h-full bg-red-500 rounded-full animate-progress" style={{
-                                    animation: 'progress 2.5s linear forwards'
-                                }} />
-                            </div>
+                        <p className="text-sm mb-4" style={{ color: 'var(--color-ink-3)' }}>
+                            Logging you out automatically…
+                        </p>
+                        <div
+                            className="h-1 overflow-hidden mb-4"
+                            style={{ backgroundColor: 'var(--color-border)', borderRadius: 'var(--radius-full)' }}
+                        >
+                            <div
+                                className="h-full"
+                                style={{
+                                    backgroundColor: 'var(--color-red-low)',
+                                    animation: 'progress 2.5s linear forwards',
+                                    borderRadius: 'var(--radius-full)',
+                                }}
+                            />
                         </div>
                         <a
                             href="/auth/logout"
-                            className="inline-block mt-4 px-4 py-2 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 text-sm font-medium transition-colors"
+                            className="inline-block text-sm font-medium px-4 py-2 transition-colors"
+                            style={{
+                                color: 'var(--color-red-low)',
+                                border: '1px solid var(--color-red-low)',
+                                borderRadius: 'var(--radius-sm)',
+                            }}
                         >
                             Logout Now
                         </a>
                     </div>
                 </div>
-                <style jsx>{`
-                    @keyframes progress {
-                        from { width: 0%; }
-                        to { width: 100%; }
-                    }
-                `}</style>
             </>
         );
     }
 
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-b border-slate-700/50 backdrop-blur-lg">
+        <nav
+            style={{ backgroundColor: 'var(--color-bg)', borderBottom: '1px solid var(--color-border)' }}
+            className="fixed top-0 left-0 right-0 z-50"
+        >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
                     {/* Logo */}
-                    <Link href="/" className="flex items-center gap-3 group">
-                        <div className="w-12 h-12 rounded-xl overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow">
+                    <Link href="/" className="flex items-center gap-3">
+                        <div className="w-10 h-10 overflow-hidden flex-shrink-0" style={{ borderRadius: 'var(--radius-md)' }}>
                             <img
                                 src="/logo.png"
                                 alt="RateDeezAir Logo"
@@ -98,47 +123,80 @@ export default function Navbar() {
                             />
                         </div>
                         <div className="hidden sm:block">
-                            <span className="text-white font-semibold text-lg">RateDeezAir</span>
-                            <span className="text-sky-400 text-xs block -mt-1">Rate Your Professors</span>
+                            <span className="font-bold text-base" style={{ color: 'var(--color-ink)' }}>
+                                RateDeezAir
+                            </span>
                         </div>
                     </Link>
 
                     {/* Navigation Links */}
-                    <div className="hidden md:flex items-center gap-6">
-                        <Link href="/" className="text-slate-300 hover:text-white transition-colors">
+                    <div className="hidden md:flex items-center gap-7">
+                        <Link
+                            href="/"
+                            className="text-sm font-medium transition-colors hover:opacity-70"
+                            style={{ color: 'var(--color-ink-2)' }}
+                        >
                             Home
                         </Link>
-                        <Link href="/faculty" className="text-slate-300 hover:text-white transition-colors">
+                        <Link
+                            href="/faculty"
+                            className="text-sm font-medium transition-colors hover:opacity-70"
+                            style={{ color: 'var(--color-ink-2)' }}
+                        >
                             Faculty
                         </Link>
-                        <Link href="/feedback" className="text-slate-300 hover:text-white transition-colors">
+                        <Link
+                            href="/feedback"
+                            className="text-sm font-medium transition-colors hover:opacity-70"
+                            style={{ color: 'var(--color-ink-2)' }}
+                        >
                             Feedback
                         </Link>
                         {user && (
-                            <Link href="/add-faculty" className="text-slate-300 hover:text-white transition-colors">
+                            <Link
+                                href="/add-faculty"
+                                className="text-sm font-medium transition-colors hover:opacity-70"
+                                style={{ color: 'var(--color-ink-2)' }}
+                            >
                                 Add Faculty
                             </Link>
                         )}
                         {user && user.email === (process.env.NEXT_PUBLIC_ADMIN_EMAIL || '242885@students.au.edu.pk') && (
-                            <Link href="/admin" className="text-slate-300 hover:text-white transition-colors">
+                            <Link
+                                href="/admin"
+                                className="text-sm font-medium transition-colors hover:opacity-70"
+                                style={{ color: 'var(--color-ink-2)' }}
+                            >
                                 Admin
                             </Link>
                         )}
                     </div>
 
                     {/* Auth Section */}
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
                         {isLoading ? (
-                            <div className="w-8 h-8 rounded-full bg-slate-700 animate-pulse" />
+                            <div
+                                className="w-8 h-8 animate-pulse"
+                                style={{ backgroundColor: 'var(--color-border)', borderRadius: 'var(--radius-full)' }}
+                            />
                         ) : user ? (
                             <div className="flex items-center gap-3">
                                 <div className="hidden sm:block text-right">
-                                    <p className="text-sm text-white font-medium">{user.name}</p>
-                                    <p className="text-xs text-slate-400">{user.email}</p>
+                                    <p className="text-sm font-medium" style={{ color: 'var(--color-ink)' }}>
+                                        {user.name}
+                                    </p>
+                                    <p className="text-xs" style={{ color: 'var(--color-ink-3)' }}>
+                                        {user.email}
+                                    </p>
                                 </div>
                                 <a
                                     href="/auth/logout"
-                                    className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium transition-colors"
+                                    className="text-sm font-medium px-4 py-1.5 transition-colors"
+                                    style={{
+                                        color: 'var(--color-ink-2)',
+                                        border: '1px solid var(--color-border)',
+                                        borderRadius: 'var(--radius-sm)',
+                                    }}
                                 >
                                     Logout
                                 </a>
@@ -146,9 +204,14 @@ export default function Navbar() {
                         ) : (
                             <a
                                 href="/auth/login"
-                                className="px-4 py-2 rounded-lg bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white text-sm font-medium shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 transition-all"
+                                className="text-sm font-medium px-4 py-1.5 transition-colors"
+                                style={{
+                                    color: 'var(--color-blue)',
+                                    border: '1px solid var(--color-blue)',
+                                    borderRadius: 'var(--radius-full)',
+                                }}
                             >
-                                Login with Student Email
+                                Student Login
                             </a>
                         )}
                     </div>
@@ -157,4 +220,3 @@ export default function Navbar() {
         </nav>
     );
 }
-

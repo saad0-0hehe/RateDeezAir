@@ -12,6 +12,23 @@ interface ProfessorDetailClientProps {
     professorId: string;
 }
 
+// Deterministic avatar bg — consistent with FacultyCard
+function getAvatarColor(id: string): string {
+    const palette = ['#D9EAF4', '#D6EAE0', '#F4EDD9', '#EAD9F4', '#F4D9D9', '#D9F4F0'];
+    let hash = 0;
+    for (let i = 0; i < id.length; i++) {
+        hash = (hash * 31 + id.charCodeAt(i)) & 0xffffffff;
+    }
+    return palette[Math.abs(hash) % palette.length];
+}
+
+function getRatingColor(rating: number): string {
+    if (rating >= 4) return 'var(--color-green)';
+    if (rating >= 3) return 'var(--color-amber)';
+    if (rating >= 1) return 'var(--color-red-low)';
+    return 'var(--color-ink-3)';
+}
+
 export default function ProfessorDetailClient({ professorId }: ProfessorDetailClientProps) {
     const { user } = useUser();
     const [professor, setProfessor] = useState<Professor | null>(null);
@@ -117,48 +134,58 @@ export default function ProfessorDetailClient({ professorId }: ProfessorDetailCl
 
     if (!professor) {
         return (
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
-                <h1 className="text-2xl font-bold text-white mb-4">Loading...</h1>
-                <Link href="/faculty" className="text-sky-400 hover:underline">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <p className="text-sm" style={{ color: 'var(--color-ink-3)' }}>Loading…</p>
+                <Link
+                    href="/faculty"
+                    className="text-sm font-medium mt-2 inline-block transition-opacity hover:opacity-70"
+                    style={{ color: 'var(--color-blue)' }}
+                >
                     ← Back to Faculty
                 </Link>
             </div>
         );
     }
 
-    const getRatingColor = (rating: number) => {
-        if (rating >= 4) return 'from-emerald-500 to-green-600';
-        if (rating >= 3) return 'from-yellow-500 to-amber-600';
-        if (rating >= 2) return 'from-orange-500 to-red-500';
-        return 'from-slate-500 to-slate-600';
-    };
+    const avatarBg = getAvatarColor(professor.id);
+    const initials = professor.name.split(' ').map((n) => n[0]).join('').slice(0, 2);
 
     const wouldTakeAgainPercent = reviews.length > 0
         ? Math.round((reviews.filter((r) => r.wouldTakeAgain).length / reviews.length) * 100)
         : 0;
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            {/* Back Link */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+            {/* Back + Share row */}
             <div className="flex items-center justify-between mb-8">
-                <Link href="/faculty" className="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <Link
+                    href="/faculty"
+                    className="inline-flex items-center gap-1.5 text-sm font-medium transition-opacity hover:opacity-70"
+                    style={{ color: 'var(--color-ink-2)' }}
+                >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                     </svg>
-                    Back to Faculty
+                    Faculty Directory
                 </Link>
 
-                {/* Share Button */}
                 <button
                     onClick={handleShare}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800 border border-slate-700/50 hover:border-sky-500/50 text-slate-300 hover:text-white transition-all text-sm font-medium"
+                    className="inline-flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 transition-colors"
+                    style={{
+                        border: '1px solid var(--color-border)',
+                        borderRadius: 'var(--radius-sm)',
+                        color: copied ? 'var(--color-green)' : 'var(--color-ink-2)',
+                        backgroundColor: '#fff',
+                    }}
                 >
                     {copied ? (
                         <>
-                            <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
-                            <span className="text-green-400">Link Copied!</span>
+                            Link Copied
                         </>
                     ) : (
                         <>
@@ -171,95 +198,135 @@ export default function ProfessorDetailClient({ professorId }: ProfessorDetailCl
                 </button>
             </div>
 
-            {/* Professor Header */}
-            <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 rounded-2xl border border-slate-700/50 p-6 md:p-8 mb-8">
-                <div className="flex flex-col md:flex-row gap-6">
-                    {/* Avatar */}
-                    <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center shadow-lg shadow-sky-500/20 overflow-hidden">
-                        {professor.imageUrl ? (
-                            <img
-                                src={professor.imageUrl}
-                                alt={professor.name}
-                                className="w-full h-full object-cover"
-                                onError={(e) => {
-                                    e.currentTarget.style.display = 'none';
-                                    e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                                }}
-                            />
-                        ) : null}
-                        <span className={`text-white font-bold text-3xl ${professor.imageUrl ? 'hidden' : ''}`}>
-                            {professor.name.split(' ').map((n) => n[0]).join('').slice(0, 2)}
-                        </span>
-                    </div>
+            {/* Professor header */}
+            <div
+                className="flex flex-col sm:flex-row gap-6 p-6 mb-8"
+                style={{
+                    border: '1px solid var(--color-border)',
+                    borderRadius: 'var(--radius-md)',
+                    backgroundColor: 'var(--color-bg-subtle)',
+                }}
+            >
+                {/* Avatar */}
+                <div
+                    className="w-16 h-16 flex-shrink-0 flex items-center justify-center text-xl font-bold overflow-hidden"
+                    style={{ borderRadius: 'var(--radius-full)', backgroundColor: avatarBg, color: 'var(--color-ink-2)' }}
+                >
+                    {professor.imageUrl ? (
+                        <img
+                            src={professor.imageUrl}
+                            alt={professor.name}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                                e.currentTarget.style.display = 'none';
+                                const sibling = e.currentTarget.nextElementSibling as HTMLElement | null;
+                                if (sibling) sibling.style.display = 'flex';
+                            }}
+                        />
+                    ) : null}
+                    <span style={{ display: professor.imageUrl ? 'none' : 'flex' }}>{initials}</span>
+                </div>
 
-                    {/* Info */}
-                    <div className="flex-1">
-                        <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">{professor.name}</h1>
-                        <p className="text-slate-400">{professor.designation}</p>
-                        <p className="text-sky-400 font-medium">{professor.department}</p>
-                        {professor.qualifications && (
-                            <p className="text-slate-500 text-sm mt-2">{professor.qualifications}</p>
-                        )}
-                        {professor.detailUrl && (
-                            <a href={professor.detailUrl} target="_blank" rel="noopener noreferrer" className="text-sky-500 text-sm mt-2 inline-block hover:underline">
-                                View University Profile ↗
-                            </a>
-                        )}
-                    </div>
+                {/* Info */}
+                <div className="flex-1">
+                    <h1 className="text-2xl font-bold mb-0.5" style={{ color: 'var(--color-ink)' }}>
+                        {professor.name}
+                    </h1>
+                    <p className="text-sm" style={{ color: 'var(--color-ink-2)' }}>{professor.designation}</p>
+                    <p className="text-sm font-medium" style={{ color: 'var(--color-blue)' }}>
+                        {professor.department}
+                    </p>
+                    {professor.qualifications && (
+                        <p className="text-xs mt-1.5" style={{ color: 'var(--color-ink-3)' }}>
+                            {professor.qualifications}
+                        </p>
+                    )}
+                    {professor.detailUrl && (
+                        <a
+                            href={professor.detailUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs mt-2 inline-block hover:underline"
+                            style={{ color: 'var(--color-blue)' }}
+                        >
+                            University Profile ↗
+                        </a>
+                    )}
+                </div>
 
-                    {/* Stats */}
-                    <div className="flex gap-4 md:gap-6">
-                        {stats.count > 0 ? (
-                            <>
-                                <div className="text-center">
-                                    <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${getRatingColor(stats.rating)} flex items-center justify-center shadow-lg mb-2`}>
-                                        <span className="text-white font-bold text-3xl">{stats.rating}</span>
-                                    </div>
-                                    <p className="text-slate-400 text-sm">Rating</p>
-                                </div>
-                                <div className="text-center">
-                                    <div className="w-20 h-20 rounded-2xl bg-slate-700 flex items-center justify-center mb-2">
-                                        <span className="text-white font-bold text-3xl">{stats.difficulty}</span>
-                                    </div>
-                                    <p className="text-slate-400 text-sm">Difficulty</p>
-                                </div>
-                                <div className="text-center">
-                                    <div className="w-20 h-20 rounded-2xl bg-slate-700 flex items-center justify-center mb-2">
-                                        <span className="text-white font-bold text-2xl">{wouldTakeAgainPercent}%</span>
-                                    </div>
-                                    <p className="text-slate-400 text-sm">Would Retake</p>
-                                </div>
-                            </>
-                        ) : (
-                            <div className="text-center px-6 py-4 bg-slate-700/50 rounded-2xl">
-                                <p className="text-slate-400">No ratings yet</p>
-                                <p className="text-white font-medium mt-1">Be the first to review!</p>
+                {/* Stats — inline row, no boxes */}
+                <div className="flex items-center gap-0 sm:gap-0 flex-shrink-0 self-start sm:self-center">
+                    {stats.count > 0 ? (
+                        <>
+                            <div className="pr-5 text-center">
+                                <p className="text-3xl font-bold" style={{ color: getRatingColor(stats.rating) }}>
+                                    {stats.rating}
+                                </p>
+                                <p className="text-xs mt-0.5" style={{ color: 'var(--color-ink-3)' }}>Rating</p>
                             </div>
-                        )}
-                    </div>
+                            <div
+                                className="self-stretch"
+                                style={{ width: '1px', backgroundColor: 'var(--color-border)' }}
+                            />
+                            <div className="px-5 text-center">
+                                <p className="text-3xl font-bold" style={{ color: 'var(--color-ink)' }}>
+                                    {stats.difficulty}
+                                </p>
+                                <p className="text-xs mt-0.5" style={{ color: 'var(--color-ink-3)' }}>Difficulty</p>
+                            </div>
+                            <div
+                                className="self-stretch"
+                                style={{ width: '1px', backgroundColor: 'var(--color-border)' }}
+                            />
+                            <div className="pl-5 text-center">
+                                <p className="text-3xl font-bold" style={{ color: 'var(--color-ink)' }}>
+                                    {wouldTakeAgainPercent}%
+                                </p>
+                                <p className="text-xs mt-0.5" style={{ color: 'var(--color-ink-3)' }}>Would Retake</p>
+                            </div>
+                        </>
+                    ) : (
+                        <div className="text-center">
+                            <p className="text-sm" style={{ color: 'var(--color-ink-3)' }}>No ratings yet</p>
+                            <p className="text-xs font-medium mt-0.5" style={{ color: 'var(--color-ink-2)' }}>
+                                Be the first!
+                            </p>
+                        </div>
+                    )}
                 </div>
             </div>
 
             {/* Reviews Section */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Reviews List */}
-                <div className="lg:col-span-2 space-y-6">
+                {/* Reviews list */}
+                <div className="lg:col-span-2 space-y-4">
                     <div className="flex items-center justify-between">
-                        <h2 className="text-xl font-semibold text-white">
+                        <h2 className="text-base font-bold" style={{ color: 'var(--color-ink)' }}>
                             Reviews ({reviews.length})
                         </h2>
                         {!showReviewForm && (
                             user ? (
                                 <button
                                     onClick={() => setShowReviewForm(true)}
-                                    className="px-4 py-2 rounded-lg bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white text-sm font-medium shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 transition-all"
+                                    className="text-sm font-medium px-4 py-2 transition-colors"
+                                    style={{
+                                        backgroundColor: 'var(--color-blue)',
+                                        color: '#fff',
+                                        borderRadius: 'var(--radius-sm)',
+                                    }}
                                 >
                                     Write a Review
                                 </button>
                             ) : (
                                 <a
                                     href="/auth/login"
-                                    className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white text-sm font-medium transition-colors"
+                                    className="text-sm font-medium px-4 py-2 transition-colors"
+                                    style={{
+                                        border: '1px solid var(--color-border)',
+                                        borderRadius: 'var(--radius-sm)',
+                                        color: 'var(--color-ink-2)',
+                                        backgroundColor: '#fff',
+                                    }}
                                 >
                                     Login to Review
                                 </a>
@@ -276,7 +343,7 @@ export default function ProfessorDetailClient({ professorId }: ProfessorDetailCl
                     )}
 
                     {reviews.length > 0 ? (
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                             {reviews.map((review) => (
                                 <ReviewCard
                                     key={review.id}
@@ -288,24 +355,38 @@ export default function ProfessorDetailClient({ professorId }: ProfessorDetailCl
                             ))}
                         </div>
                     ) : (
-                        <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-8 text-center">
-                            <div className="w-16 h-16 rounded-full bg-slate-700 flex items-center justify-center mx-auto mb-4">
-                                <svg className="w-8 h-8 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-                                </svg>
-                            </div>
-                            <p className="text-slate-400 mb-4">No reviews yet for this professor.</p>
+                        <div
+                            className="py-10 text-center"
+                            style={{
+                                border: '1px solid var(--color-border)',
+                                borderRadius: 'var(--radius-md)',
+                                backgroundColor: 'var(--color-bg-subtle)',
+                            }}
+                        >
+                            <p className="text-sm mb-4" style={{ color: 'var(--color-ink-3)' }}>
+                                No reviews yet for this professor.
+                            </p>
                             {user ? (
                                 <button
                                     onClick={() => setShowReviewForm(true)}
-                                    className="px-6 py-3 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-medium shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 transition-all"
+                                    className="text-sm font-medium px-4 py-2 transition-colors"
+                                    style={{
+                                        backgroundColor: 'var(--color-blue)',
+                                        color: '#fff',
+                                        borderRadius: 'var(--radius-sm)',
+                                    }}
                                 >
                                     Be the first to review
                                 </button>
                             ) : (
                                 <a
                                     href="/auth/login"
-                                    className="inline-block px-6 py-3 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-medium shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 transition-all"
+                                    className="inline-block text-sm font-medium px-4 py-2 transition-colors"
+                                    style={{
+                                        backgroundColor: 'var(--color-blue)',
+                                        color: '#fff',
+                                        borderRadius: 'var(--radius-sm)',
+                                    }}
                                 >
                                     Login to add a review
                                 </a>
@@ -315,25 +396,50 @@ export default function ProfessorDetailClient({ professorId }: ProfessorDetailCl
                 </div>
 
                 {/* Sidebar */}
-                <div className="space-y-6">
+                <div className="space-y-4">
                     {/* Rating Distribution */}
                     {reviews.length > 0 && (
-                        <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-6">
-                            <h3 className="text-lg font-semibold text-white mb-4">Rating Distribution</h3>
-                            <div className="space-y-3">
+                        <div
+                            className="p-5"
+                            style={{
+                                border: '1px solid var(--color-border)',
+                                borderRadius: 'var(--radius-md)',
+                                backgroundColor: '#fff',
+                            }}
+                        >
+                            <h3 className="text-sm font-bold mb-4" style={{ color: 'var(--color-ink)' }}>
+                                Rating Distribution
+                            </h3>
+                            <div className="space-y-2">
                                 {[5, 4, 3, 2, 1].map((rating) => {
                                     const count = reviews.filter((r) => r.rating === rating).length;
                                     const percent = (count / reviews.length) * 100;
                                     return (
                                         <div key={rating} className="flex items-center gap-3">
-                                            <span className="text-slate-400 text-sm w-4">{rating}</span>
-                                            <div className="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
+                                            <span className="text-xs w-3 text-right" style={{ color: 'var(--color-ink-3)' }}>
+                                                {rating}
+                                            </span>
+                                            <div
+                                                className="flex-1 overflow-hidden"
+                                                style={{
+                                                    height: '6px',
+                                                    backgroundColor: 'var(--color-border)',
+                                                    borderRadius: 'var(--radius-full)',
+                                                }}
+                                            >
                                                 <div
-                                                    className="h-full bg-gradient-to-r from-sky-400 to-blue-600 rounded-full transition-all"
-                                                    style={{ width: `${percent}%` }}
+                                                    style={{
+                                                        width: `${percent}%`,
+                                                        height: '100%',
+                                                        backgroundColor: getRatingColor(rating),
+                                                        borderRadius: 'var(--radius-full)',
+                                                        transition: 'width 0.3s ease',
+                                                    }}
                                                 />
                                             </div>
-                                            <span className="text-slate-500 text-sm w-8">{count}</span>
+                                            <span className="text-xs w-4 text-right" style={{ color: 'var(--color-ink-3)' }}>
+                                                {count}
+                                            </span>
                                         </div>
                                     );
                                 })}
@@ -342,20 +448,41 @@ export default function ProfessorDetailClient({ professorId }: ProfessorDetailCl
                     )}
 
                     {/* Quick Stats */}
-                    <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">Quick Stats</h3>
-                        <div className="space-y-4">
+                    <div
+                        className="p-5"
+                        style={{
+                            border: '1px solid var(--color-border)',
+                            borderRadius: 'var(--radius-md)',
+                            backgroundColor: '#fff',
+                        }}
+                    >
+                        <h3 className="text-sm font-bold mb-4" style={{ color: 'var(--color-ink)' }}>
+                            Quick Stats
+                        </h3>
+                        <div className="space-y-3">
                             <div className="flex justify-between">
-                                <span className="text-slate-400">Total Reviews</span>
-                                <span className="text-white font-medium">{reviews.length}</span>
+                                <span className="text-sm" style={{ color: 'var(--color-ink-3)' }}>Total Reviews</span>
+                                <span className="text-sm font-medium" style={{ color: 'var(--color-ink)' }}>
+                                    {reviews.length}
+                                </span>
                             </div>
+                            <div
+                                style={{ height: '1px', backgroundColor: 'var(--color-border)' }}
+                            />
                             <div className="flex justify-between">
-                                <span className="text-slate-400">Department</span>
-                                <span className="text-white font-medium">{professor.department}</span>
+                                <span className="text-sm" style={{ color: 'var(--color-ink-3)' }}>Department</span>
+                                <span className="text-sm font-medium text-right max-w-[60%]" style={{ color: 'var(--color-ink)' }}>
+                                    {professor.department}
+                                </span>
                             </div>
+                            <div
+                                style={{ height: '1px', backgroundColor: 'var(--color-border)' }}
+                            />
                             <div className="flex justify-between">
-                                <span className="text-slate-400">Designation</span>
-                                <span className="text-white font-medium">{professor.designation}</span>
+                                <span className="text-sm" style={{ color: 'var(--color-ink-3)' }}>Designation</span>
+                                <span className="text-sm font-medium text-right max-w-[60%]" style={{ color: 'var(--color-ink)' }}>
+                                    {professor.designation}
+                                </span>
                             </div>
                         </div>
                     </div>

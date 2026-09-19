@@ -1,77 +1,102 @@
 import Link from 'next/link';
 import { Professor } from '@/lib/types';
+
 interface FacultyCardProps {
     professor: Professor;
     stats?: { rating: number; difficulty: number; count: number };
 }
 
-export default function FacultyCard({ professor, stats = { rating: 0, difficulty: 0, count: 0 } }: FacultyCardProps) {
-    // const stats = getAverageRating(professor.id); // Removed
+// Deterministic avatar background from professor id — no gradients
+function getAvatarColor(id: string): string {
+    const palette = ['#D9EAF4', '#D6EAE0', '#F4EDD9', '#EAD9F4', '#F4D9D9', '#D9F4F0'];
+    let hash = 0;
+    for (let i = 0; i < id.length; i++) {
+        hash = (hash * 31 + id.charCodeAt(i)) & 0xffffffff;
+    }
+    return palette[Math.abs(hash) % palette.length];
+}
 
-    const getRatingColor = (rating: number) => {
-        if (rating >= 4) return 'from-emerald-500 to-green-600';
-        if (rating >= 3) return 'from-yellow-500 to-amber-600';
-        if (rating >= 2) return 'from-orange-500 to-red-500';
-        return 'from-slate-500 to-slate-600';
-    };
+function getAvatarTextColor(bg: string): string {
+    // All palette colors are light, so dark ink is always fine
+    return 'var(--color-ink-2)';
+}
+
+function getRatingStyle(rating: number): { color: string } {
+    if (rating >= 4) return { color: 'var(--color-green)' };
+    if (rating >= 3) return { color: 'var(--color-amber)' };
+    if (rating >= 1) return { color: 'var(--color-red-low)' };
+    return { color: 'var(--color-ink-3)' };
+}
+
+export default function FacultyCard({ professor, stats = { rating: 0, difficulty: 0, count: 0 } }: FacultyCardProps) {
+    const avatarBg = getAvatarColor(professor.id);
+    const avatarText = getAvatarTextColor(avatarBg);
+    const initials = professor.name.split(' ').map(n => n[0]).join('').slice(0, 2);
 
     return (
-        <Link href={`/faculty/${professor.id}`}>
-            <div className="group relative bg-gradient-to-br from-slate-800/80 to-slate-900/80 rounded-2xl border border-slate-700/50 p-6 hover:border-sky-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-sky-500/10 hover:-translate-y-1">
-                {/* Rating Badge */}
-                {stats.count > 0 && (
-                    <div className={`absolute -top-3 -right-3 w-14 h-14 rounded-xl bg-gradient-to-br ${getRatingColor(stats.rating)} flex items-center justify-center shadow-lg`}>
-                        <span className="text-white font-bold text-lg">{stats.rating}</span>
-                    </div>
-                )}
-
-                {/* Avatar */}
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center mb-4 shadow-lg shadow-sky-500/20 overflow-hidden">
+        <Link href={`/faculty/${professor.id}`} className="block group">
+            <div
+                className="flex items-center gap-4 px-4 py-3.5 transition-colors"
+                style={{
+                    border: '1px solid var(--color-border)',
+                    borderRadius: 'var(--radius-md)',
+                    backgroundColor: '#fff',
+                }}
+                onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLDivElement).style.borderColor = 'var(--color-blue)';
+                    (e.currentTarget as HTMLDivElement).style.backgroundColor = 'var(--color-blue-light)';
+                }}
+                onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLDivElement).style.borderColor = 'var(--color-border)';
+                    (e.currentTarget as HTMLDivElement).style.backgroundColor = '#fff';
+                }}
+            >
+                {/* Avatar — solid hash-based color, no gradient */}
+                <div
+                    className="flex-shrink-0 w-10 h-10 flex items-center justify-center text-sm font-bold overflow-hidden"
+                    style={{ borderRadius: 'var(--radius-full)', backgroundColor: avatarBg, color: avatarText }}
+                >
                     {professor.imageUrl ? (
                         <img
                             src={professor.imageUrl}
                             alt={professor.name}
                             className="w-full h-full object-cover"
                             onError={(e) => {
-                                // Fallback to initials on error
                                 e.currentTarget.style.display = 'none';
-                                e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                                const sibling = e.currentTarget.nextElementSibling as HTMLElement | null;
+                                if (sibling) sibling.style.display = 'flex';
                             }}
                         />
                     ) : null}
-                    <span className={`text-white font-bold text-xl ${professor.imageUrl ? 'hidden' : ''}`}>
-                        {professor.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                    <span style={{ display: professor.imageUrl ? 'none' : 'flex' }}>{initials}</span>
+                </div>
+
+                {/* Name + designation + dept */}
+                <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate" style={{ color: 'var(--color-ink)' }}>
+                        {professor.name}
+                    </p>
+                    <p className="text-xs truncate" style={{ color: 'var(--color-ink-3)' }}>
+                        {professor.designation && `${professor.designation} · `}{professor.department}
+                    </p>
+                </div>
+
+                {/* Rating + review count */}
+                {stats.count > 0 ? (
+                    <div className="flex-shrink-0 text-right">
+                        <p className="text-sm font-bold" style={getRatingStyle(stats.rating)}>
+                            {stats.rating}
+                            <span className="font-normal text-xs ml-0.5" style={{ color: 'var(--color-ink-3)' }}>/5</span>
+                        </p>
+                        <p className="text-xs" style={{ color: 'var(--color-ink-3)' }}>
+                            {stats.count} {stats.count === 1 ? 'review' : 'reviews'}
+                        </p>
+                    </div>
+                ) : (
+                    <span className="flex-shrink-0 text-xs" style={{ color: 'var(--color-ink-3)' }}>
+                        No reviews
                     </span>
-                </div>
-
-                {/* Info */}
-                <h3 className="text-lg font-semibold text-white group-hover:text-sky-400 transition-colors">
-                    {professor.name}
-                </h3>
-                <p className="text-slate-400 text-sm mt-1">{professor.designation}</p>
-                <p className="text-sky-400 text-sm font-medium mt-1">{professor.department}</p>
-
-                {/* Stats */}
-                <div className="flex items-center gap-4 mt-4 pt-4 border-t border-slate-700/50">
-                    {stats.count > 0 ? (
-                        <>
-                            <div className="text-center">
-                                <p className="text-lg font-semibold text-white">{stats.rating}</p>
-                                <p className="text-xs text-slate-500">Rating</p>
-                            </div>
-                            <div className="text-center">
-                                <p className="text-lg font-semibold text-white">{stats.difficulty}</p>
-                                <p className="text-xs text-slate-500">Difficulty</p>
-                            </div>
-                            <div className="text-center">
-                                <p className="text-lg font-semibold text-white">{stats.count}</p>
-                                <p className="text-xs text-slate-500">Reviews</p>
-                            </div>
-                        </>
-                    ) : (
-                        <p className="text-slate-500 text-sm">No reviews yet</p>
-                    )}
-                </div>
+                )}
             </div>
         </Link>
     );

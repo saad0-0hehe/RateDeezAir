@@ -1,39 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;700&display=swap');
 @import "tailwindcss";
 
 :root {
-  --background: #0f172a;
-  --foreground: #f8fafc;
+  /* Color tokens */
+  --color-bg:         #F5F2EE;
+  --color-bg-subtle:  #EDEBE6;
+  --color-ink:        #1A1A1A;
+  --color-ink-2:      #4A4A4A;
+  --color-ink-3:      #888480;
+  --color-border:     #D4CFC9;
+  --color-blue:       #1B6FA3;
+  --color-blue-decorative: #2086BF;
+  --color-blue-light: #E7F1F7;
+  --color-green:      #2D6A4F;
+  --color-amber:      #9B6E00;
+  --color-red-low:    #B3261E;
+
+  /* Radius tokens */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-full: 9999px;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: 'Inter', system-ui, sans-serif;
+html, body {
+  background-color: var(--color-bg);
+  color: var(--color-ink);
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom scrollbar */
+/* Scrollbar — matches warm palette */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #1e293b;
+  background: var(--color-bg-subtle);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #475569;
-  border-radius: 4px;
+  background: var(--color-border);
+  border-radius: var(--radius-sm);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #64748b;
+  background: var(--color-ink-3);
 }
 
-/* Animation utilities */
+/* Fade-in utility (kept for functional use) */
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -42,13 +61,11 @@ body {
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.3s ease-out forwards;
+  animation: fadeIn 0.25s ease-out forwards;
 }
 
-/* Gradient text */
-.gradient-text {
-  background: linear-gradient(135deg, #38bdf8 0%, #3b82f6 50%, #8b5cf6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* Progress bar animation for the invalid-email overlay */
+@keyframes progress {
+  from { width: 0%; }
+  to { width: 100%; }
 }

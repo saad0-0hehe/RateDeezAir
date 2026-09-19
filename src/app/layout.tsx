@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 import { Auth0Provider } from '@auth0/nextjs-auth0/client';
-import { Inter } from 'next/font/google';
+import { IBM_Plex_Sans } from 'next/font/google';
 import Navbar from "@/components/Navbar";
 import "./globals.css";
 
-const inter = Inter({ subsets: ['latin'] });
+const ibmPlexSans = IBM_Plex_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '700'],
+  variable: '--font-ibm-plex-sans',
+});
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://rate-deez-air.vercel.app';
 
@@ -66,7 +70,7 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/logo.png" />
       </head>
-      <body className={`${inter.className} antialiased`}>
+      <body className={`${ibmPlexSans.variable} antialiased`} style={{ fontFamily: "'IBM Plex Sans', system-ui, sans-serif" }}>
         <Auth0Provider>
           <Navbar />
           <main className="pt-16 min-h-screen">

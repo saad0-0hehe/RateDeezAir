@@ -65,64 +65,91 @@ export default function FacultyPage() {
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
-                <div className="w-8 h-8 border-4 border-sky-500 border-t-transparent rounded-full animate-spin"></div>
+                <div
+                    className="w-6 h-6 border-2 border-t-transparent animate-spin"
+                    style={{
+                        borderColor: 'var(--color-border)',
+                        borderTopColor: 'var(--color-blue)',
+                        borderRadius: 'var(--radius-full)',
+                    }}
+                />
             </div>
         );
     }
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
             {/* Header */}
             <div className="flex items-start justify-between mb-8">
                 <div>
-                    <h1 className="text-3xl font-bold text-white mb-2">Faculty Directory</h1>
-                    <p className="text-slate-400">Browse and rate professors at Air University Islamabad</p>
+                    <h1 className="text-2xl font-bold mb-1" style={{ color: 'var(--color-ink)' }}>
+                        Faculty Directory
+                    </h1>
+                    <p className="text-sm" style={{ color: 'var(--color-ink-2)' }}>
+                        Browse and rate professors at Air University Islamabad
+                    </p>
                 </div>
                 <Link
                     href="/add-faculty"
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-purple-500/10 border border-purple-500/30 hover:border-purple-500/60 text-purple-400 hover:text-purple-300 text-sm font-medium transition-all flex-shrink-0"
+                    className="flex items-center gap-1.5 text-sm font-medium px-3 py-2 transition-colors flex-shrink-0"
+                    style={{
+                        color: 'var(--color-blue)',
+                        border: '1px solid var(--color-blue)',
+                        borderRadius: 'var(--radius-sm)',
+                    }}
                 >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                     </svg>
                     Add Faculty
                 </Link>
             </div>
 
             {/* Filters */}
-            <div className="flex flex-col sm:flex-row gap-4 mb-8">
+            <div className="flex flex-col sm:flex-row gap-3 mb-5">
                 {/* Search */}
-                <div className="flex-1">
-                    <div className="relative">
-                        <svg
-                            className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                            />
-                        </svg>
-                        <input
-                            type="text"
-                            placeholder="Search by name or department..."
-                            value={searchQuery}
-                            onChange={(e) => handleSearchChange(e.target.value)}
-                            className="w-full pl-12 pr-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
-                        />
-                    </div>
+                <div className="flex-1 relative">
+                    <svg
+                        className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
+                        style={{ color: 'var(--color-ink-3)' }}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <input
+                        type="text"
+                        placeholder="Search by name or department…"
+                        value={searchQuery}
+                        onChange={(e) => handleSearchChange(e.target.value)}
+                        className="w-full pl-9 pr-4 py-2.5 text-sm outline-none transition-colors"
+                        style={{
+                            border: '1px solid var(--color-border)',
+                            borderRadius: 'var(--radius-sm)',
+                            backgroundColor: '#fff',
+                            color: 'var(--color-ink)',
+                        }}
+                        onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--color-blue)'; }}
+                        onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--color-border)'; }}
+                    />
                 </div>
 
                 {/* Department Filter */}
-                <div className="sm:w-64">
+                <div className="sm:w-56">
                     <select
                         value={selectedDepartment}
                         onChange={(e) => handleDepartmentChange(e.target.value)}
-                        className="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent appearance-none cursor-pointer"
+                        className="w-full px-3 py-2.5 text-sm outline-none transition-colors appearance-none cursor-pointer"
+                        style={{
+                            border: '1px solid var(--color-border)',
+                            borderRadius: 'var(--radius-sm)',
+                            backgroundColor: '#fff',
+                            color: 'var(--color-ink)',
+                        }}
+                        onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--color-blue)'; }}
+                        onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--color-border)'; }}
                     >
                         <option value="all">All Departments</option>
                         {activeDepartments.sort().map((dept) => (
@@ -134,29 +161,25 @@ export default function FacultyPage() {
                 </div>
             </div>
 
-            {/* Results Count */}
-            <p className="text-slate-400 text-sm mb-6">
+            {/* Results count */}
+            <p className="text-xs mb-4" style={{ color: 'var(--color-ink-3)' }}>
                 Showing {filteredProfessors.length} of {allProfessors.length} professors
             </p>
 
-            {/* Grid */}
+            {/* List */}
             {filteredProfessors.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="flex flex-col gap-2">
                     {filteredProfessors.map((professor) => (
                         <FacultyCard key={professor.id} professor={professor} stats={professor.stats} />
                     ))}
                 </div>
             ) : (
-                <div className="text-center py-16">
-                    <div className="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center mx-auto mb-4">
-                        <svg className="w-8 h-8 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <p className="text-slate-400">No professors found matching your search.</p>
+                <div className="py-20 text-center">
+                    <p className="text-sm" style={{ color: 'var(--color-ink-3)' }}>
+                        No professors found matching your search.
+                    </p>
                 </div>
             )}
         </div>
     );
 }
-

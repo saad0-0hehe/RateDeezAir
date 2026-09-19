@@ -35,11 +35,25 @@ export default function FeedbackForm() {
 
     if (!user) {
         return (
-            <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-6 text-center">
-                <p className="text-slate-400">Please login to submit feedback.</p>
+            <div
+                className="p-5 text-center"
+                style={{
+                    border: '1px solid var(--color-border)',
+                    borderRadius: 'var(--radius-md)',
+                    backgroundColor: 'var(--color-bg-subtle)',
+                }}
+            >
+                <p className="text-sm mb-4" style={{ color: 'var(--color-ink-2)' }}>
+                    Please log in with your student email to submit feedback.
+                </p>
                 <a
                     href="/auth/login"
-                    className="inline-block mt-4 px-4 py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-white font-medium transition-colors"
+                    className="inline-block text-sm font-medium px-4 py-2 transition-colors"
+                    style={{
+                        color: '#fff',
+                        backgroundColor: 'var(--color-blue)',
+                        borderRadius: 'var(--radius-sm)',
+                    }}
                 >
                     Login
                 </a>
@@ -49,15 +63,29 @@ export default function FeedbackForm() {
 
     if (submitted) {
         return (
-            <div className="bg-green-900/30 rounded-xl border border-green-700/50 p-6 text-center">
-                <svg className="w-12 h-12 text-green-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                <h3 className="text-lg font-semibold text-white mb-2">Thank You!</h3>
-                <p className="text-slate-400">Your feedback has been submitted successfully.</p>
+            <div
+                className="p-5 text-center"
+                style={{
+                    border: '1px solid var(--color-border)',
+                    borderRadius: 'var(--radius-md)',
+                    backgroundColor: 'var(--color-bg-subtle)',
+                }}
+            >
+                <p className="text-base font-bold mb-1" style={{ color: 'var(--color-green)' }}>
+                    Thank you!
+                </p>
+                <p className="text-sm mb-4" style={{ color: 'var(--color-ink-2)' }}>
+                    Your feedback has been submitted successfully.
+                </p>
                 <button
                     onClick={() => setSubmitted(false)}
-                    className="mt-4 px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white font-medium transition-colors"
+                    className="text-sm font-medium px-4 py-2 transition-colors"
+                    style={{
+                        border: '1px solid var(--color-border)',
+                        borderRadius: 'var(--radius-sm)',
+                        color: 'var(--color-ink-2)',
+                        backgroundColor: '#fff',
+                    }}
                 >
                     Submit Another
                 </button>
@@ -66,35 +94,57 @@ export default function FeedbackForm() {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">Send Feedback</h3>
-            <p className="text-slate-400 text-sm mb-4">
-                Have suggestions or found a bug? Let us know!
-            </p>
+        <form onSubmit={handleSubmit}>
+            {/* Label */}
+            <label
+                htmlFor="feedback-message"
+                className="block text-sm font-medium mb-2"
+                style={{ color: 'var(--color-ink)' }}
+            >
+                Your message
+            </label>
 
+            {/* Textarea */}
             <textarea
+                id="feedback-message"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="Your feedback..."
-                rows={4}
-                className="w-full px-4 py-3 rounded-xl bg-slate-900/50 border border-slate-700/50 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500/50 resize-none"
+                placeholder="Suggestions, bugs, anything…"
+                rows={5}
+                className="w-full px-3 py-2.5 text-sm outline-none resize-none transition-colors"
+                style={{
+                    border: '1px solid var(--color-border)',
+                    borderRadius: 'var(--radius-sm)',
+                    backgroundColor: '#fff',
+                    color: 'var(--color-ink)',
+                }}
                 required
                 maxLength={1000}
+                onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--color-blue)'; }}
+                onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--color-border)'; }}
             />
 
-            <div className="flex items-center justify-between mt-4">
-                <span className="text-slate-500 text-sm">{message.length}/1000</span>
+            {/* Count + submit */}
+            <div className="flex items-center justify-between mt-3">
+                <span className="text-xs" style={{ color: 'var(--color-ink-3)' }}>
+                    {message.length}/1000
+                </span>
                 <button
                     type="submit"
                     disabled={isSubmitting || !message.trim()}
-                    className="px-6 py-2 rounded-lg bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-medium shadow-lg shadow-sky-500/25 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                    className="text-sm font-medium px-5 py-2 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
+                    style={{
+                        backgroundColor: 'var(--color-blue)',
+                        color: '#fff',
+                        borderRadius: 'var(--radius-sm)',
+                    }}
                 >
-                    {isSubmitting ? 'Sending...' : 'Send Feedback'}
+                    {isSubmitting ? 'Sending…' : 'Send Feedback'}
                 </button>
             </div>
 
             {error && (
-                <p className="mt-3 text-red-400 text-sm">{error}</p>
+                <p className="mt-3 text-sm" style={{ color: 'var(--color-red-low)' }}>{error}</p>
             )}
         </form>
     );
