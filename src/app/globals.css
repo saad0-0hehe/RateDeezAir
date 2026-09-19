@@ -31,24 +31,24 @@
 /* ── Dark mode tokens ─────────────────────────────────────────────── */
 /* Applied when <html class="dark"> is set */
 .dark {
-  --color-bg:          #16150F;
-  --color-bg-subtle:   #201F19;
-  --color-ink:         #F5F2EE;
-  --color-ink-2:       #B8B3AB;
-  --color-ink-3:       #837E76;
-  --color-border:      #33322B;
+  --color-bg:          #17181A;
+  --color-bg-subtle:   #1F2023;
+  --color-ink:         #F0F0EF;
+  --color-ink-2:       #ABABA9;
+  --color-ink-3:       #7A7A78;
+  --color-border:      #333436;
   --color-blue:        #4A9FD4;
   --color-blue-decorative: #5BB0E5;
-  --color-blue-light:  #1C2E3A;
+  --color-blue-light:  #1C2A33;
   --color-green:       #4C9B7A;
-  --color-green-light: #1A2E26;
+  --color-green-light: #182820;
   --color-amber:       #D4A23B;
-  --color-amber-light: #2C2510;
+  --color-amber-light: #252115;
   --color-red-low:     #E05B52;
-  --color-red-light:   #2E1714;
+  --color-red-light:   #2B1614;
 
-  /* Card surface — slightly elevated above --color-bg (#16150F) */
-  --color-surface:     #1E1D16;
+  /* Card surface — slightly elevated above --color-bg (#17181A) */
+  --color-surface:     #26272A;
 }
 
 /* ── Base styles ─────────────────────────────────────────────────── */
