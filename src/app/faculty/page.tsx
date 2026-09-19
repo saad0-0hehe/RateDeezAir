@@ -81,12 +81,12 @@ export default function FacultyPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
             {/* Header */}
-            <div className="flex items-start justify-between mb-8">
+            <div className="flex items-start justify-between mb-2">
                 <div>
-                    <h1 className="text-2xl font-bold mb-1" style={{ color: 'var(--color-ink)' }}>
+                    <h1 className="text-2xl font-bold" style={{ color: 'var(--color-ink)' }}>
                         Faculty Directory
                     </h1>
-                    <p className="text-sm" style={{ color: 'var(--color-ink-2)' }}>
+                    <p className="text-sm mt-0.5" style={{ color: 'var(--color-ink-2)' }}>
                         Browse and rate professors at Air University Islamabad
                     </p>
                 </div>
@@ -94,8 +94,8 @@ export default function FacultyPage() {
                     href="/add-faculty"
                     className="flex items-center gap-1.5 text-sm font-medium px-3 py-2 transition-colors flex-shrink-0"
                     style={{
-                        color: 'var(--color-blue)',
-                        border: '1px solid var(--color-blue)',
+                        color: '#fff',
+                        backgroundColor: 'var(--color-blue)',
                         borderRadius: 'var(--radius-sm)',
                     }}
                 >
@@ -105,6 +105,9 @@ export default function FacultyPage() {
                     Add Faculty
                 </Link>
             </div>
+            {/* Blue rule under heading */}
+            <div className="rda-section-rule" />
+
 
             {/* Filters */}
             <div className="flex flex-col sm:flex-row gap-3 mb-5">
@@ -126,7 +129,7 @@ export default function FacultyPage() {
                         onChange={(e) => handleSearchChange(e.target.value)}
                         className="w-full pl-9 pr-4 py-2.5 text-sm outline-none transition-colors"
                         style={{
-                            border: '1px solid var(--color-border)',
+                            border: '2px solid var(--color-border)',
                             borderRadius: 'var(--radius-sm)',
                             backgroundColor: '#fff',
                             color: 'var(--color-ink)',

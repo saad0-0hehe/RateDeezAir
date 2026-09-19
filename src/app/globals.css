@@ -6,7 +6,7 @@
   --color-bg:         #F5F2EE;
   --color-bg-subtle:  #EDEBE6;
   --color-ink:        #1A1A1A;
-  --color-ink-2:      #4A4A4A;
+  --color-ink-2:      #333333;   /* darkened from #4A4A4A for clearer 3-tier hierarchy */
   --color-ink-3:      #888480;
   --color-border:     #D4CFC9;
   --color-blue:       #1B6FA3;
@@ -30,26 +30,13 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Scrollbar — matches warm palette */
-::-webkit-scrollbar {
-  width: 8px;
-}
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--color-bg-subtle); }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: var(--radius-sm); }
+::-webkit-scrollbar-thumb:hover { background: var(--color-ink-3); }
 
-::-webkit-scrollbar-track {
-  background: var(--color-bg-subtle);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: var(--radius-sm);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-ink-3);
-}
-
-/* Fade-in utility (kept for functional use) */
-/* ── Hover utility classes (replaces JS onMouseEnter/onMouseLeave) ── */
+/* ── Hover utility classes ────────────────────────────────────────── */
 
 /* Faculty list row & FacultyCard */
 .rda-card-row {
@@ -63,18 +50,18 @@ html, body {
   background-color: var(--color-blue-light);
 }
 
-/* Home page search bar */
-.rda-search-bar {
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
+/* Home hero search input wrapper */
+.rda-search-input {
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
   background-color: #fff;
   transition: border-color 150ms ease;
 }
-.rda-search-bar:hover {
+.rda-search-input:focus-within {
   border-color: var(--color-blue);
 }
 
-/* Top-rated list row (inside a container with its own border) */
+/* Top-rated list row */
 .rda-list-row {
   background-color: transparent;
   transition: background-color 150ms ease;
@@ -83,17 +70,31 @@ html, body {
   background-color: var(--color-blue-light);
 }
 
+/* ── Section heading accent rule ─────────────────────────────────── */
+/* Usage: <div class="rda-section-rule"></div> placed after a heading */
+.rda-section-rule {
+  width: 2rem;
+  height: 3px;
+  background-color: var(--color-blue);
+  margin-top: 0.5rem;
+  margin-bottom: 1.25rem;
+  border-radius: 1px;
+}
+
+/* Hero decorative rule — sits above the eyebrow label */
+.rda-hero-rule {
+  width: 3rem;
+  height: 3px;
+  background-color: var(--color-blue);
+  margin-bottom: 0.75rem;
+  border-radius: 1px;
+}
+
 /* ── Animations ───────────────────────────────────────────────────── */
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);   }
 }
 
 .animate-fade-in {
@@ -103,5 +104,5 @@ html, body {
 /* Progress bar animation for the invalid-email overlay */
 @keyframes progress {
   from { width: 0%; }
-  to { width: 100%; }
+  to   { width: 100%; }
 }

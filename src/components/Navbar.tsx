@@ -182,10 +182,7 @@ export default function Navbar() {
                         ) : user ? (
                             <div className="flex items-center gap-3">
                                 <div className="hidden sm:block text-right">
-                                    <p className="text-sm font-medium" style={{ color: 'var(--color-ink)' }}>
-                                        {user.name}
-                                    </p>
-                                    <p className="text-xs" style={{ color: 'var(--color-ink-3)' }}>
+                                    <p className="text-xs" style={{ color: 'var(--color-ink-2)' }}>
                                         {user.email}
                                     </p>
                                 </div>
