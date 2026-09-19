@@ -35,22 +35,8 @@ export default function FacultyCard({ professor, stats = { rating: 0, difficulty
 
     return (
         <Link href={`/faculty/${professor.id}`} className="block group">
-            <div
-                className="flex items-center gap-4 px-4 py-3.5 transition-colors"
-                style={{
-                    border: '1px solid var(--color-border)',
-                    borderRadius: 'var(--radius-md)',
-                    backgroundColor: '#fff',
-                }}
-                onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLDivElement).style.borderColor = 'var(--color-blue)';
-                    (e.currentTarget as HTMLDivElement).style.backgroundColor = 'var(--color-blue-light)';
-                }}
-                onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLDivElement).style.borderColor = 'var(--color-border)';
-                    (e.currentTarget as HTMLDivElement).style.backgroundColor = '#fff';
-                }}
-            >
+            <div className="rda-card-row flex items-center gap-4 px-4 py-3.5">
+
                 {/* Avatar — solid hash-based color, no gradient */}
                 <div
                     className="flex-shrink-0 w-10 h-10 flex items-center justify-center text-sm font-bold overflow-hidden"

@@ -36,21 +36,7 @@ export default async function Home() {
 
           {/* Search bar — links to /faculty */}
           <Link href="/faculty" className="block max-w-lg">
-            <div
-              className="flex items-center gap-3 px-4 py-3 transition-colors"
-              style={{
-                border: '1px solid var(--color-border)',
-                borderRadius: 'var(--radius-sm)',
-                backgroundColor: '#fff',
-                cursor: 'pointer',
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLDivElement).style.borderColor = 'var(--color-blue)';
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLDivElement).style.borderColor = 'var(--color-border)';
-              }}
-            >
+            <div className="rda-search-bar flex items-center gap-3 px-4 py-3" style={{ cursor: 'pointer' }}>
               <svg
                 style={{ color: 'var(--color-ink-3)', flexShrink: 0 }}
                 className="w-4 h-4"
@@ -113,16 +99,9 @@ export default async function Home() {
             {topProfessors.map((professor, index) => (
               <Link key={professor.id} href={`/faculty/${professor.id}`} className="block">
                 <div
-                  className="flex items-center gap-4 px-5 py-4 transition-colors"
+                  className="rda-list-row flex items-center gap-4 px-5 py-4"
                   style={{
                     borderBottom: index < topProfessors.length - 1 ? '1px solid var(--color-border)' : 'none',
-                    backgroundColor: 'transparent',
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLDivElement).style.backgroundColor = 'var(--color-blue-light)';
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLDivElement).style.backgroundColor = 'transparent';
                   }}
                 >
                   {/* Ordinal rank */}

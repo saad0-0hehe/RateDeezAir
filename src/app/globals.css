@@ -49,6 +49,42 @@ html, body {
 }
 
 /* Fade-in utility (kept for functional use) */
+/* ── Hover utility classes (replaces JS onMouseEnter/onMouseLeave) ── */
+
+/* Faculty list row & FacultyCard */
+.rda-card-row {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: #fff;
+  transition: border-color 150ms ease, background-color 150ms ease;
+}
+.rda-card-row:hover {
+  border-color: var(--color-blue);
+  background-color: var(--color-blue-light);
+}
+
+/* Home page search bar */
+.rda-search-bar {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: #fff;
+  transition: border-color 150ms ease;
+}
+.rda-search-bar:hover {
+  border-color: var(--color-blue);
+}
+
+/* Top-rated list row (inside a container with its own border) */
+.rda-list-row {
+  background-color: transparent;
+  transition: background-color 150ms ease;
+}
+.rda-list-row:hover {
+  background-color: var(--color-blue-light);
+}
+
+/* ── Animations ───────────────────────────────────────────────────── */
+
 @keyframes fadeIn {
   from {
     opacity: 0;
