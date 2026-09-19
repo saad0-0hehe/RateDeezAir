@@ -12,14 +12,9 @@ interface ProfessorDetailClientProps {
     professorId: string;
 }
 
-// Deterministic avatar bg — consistent with FacultyCard
-function getAvatarColor(id: string): string {
-    const palette = ['#D9EAF4', '#D6EAE0', '#F4EDD9', '#EAD9F4', '#F4D9D9', '#D9F4F0'];
-    let hash = 0;
-    for (let i = 0; i < id.length; i++) {
-        hash = (hash * 31 + id.charCodeAt(i)) & 0xffffffff;
-    }
-    return palette[Math.abs(hash) % palette.length];
+// Avatar bg — only shown when photo is absent (initials fallback)
+function getAvatarBg(): string {
+    return 'var(--color-bg-subtle)';
 }
 
 function getRatingColor(rating: number): string {
@@ -147,7 +142,6 @@ export default function ProfessorDetailClient({ professorId }: ProfessorDetailCl
         );
     }
 
-    const avatarBg = getAvatarColor(professor.id);
     const initials = professor.name.split(' ').map((n) => n[0]).join('').slice(0, 2);
 
     const wouldTakeAgainPercent = reviews.length > 0
@@ -177,7 +171,7 @@ export default function ProfessorDetailClient({ professorId }: ProfessorDetailCl
                         border: '1px solid var(--color-border)',
                         borderRadius: 'var(--radius-sm)',
                         color: copied ? 'var(--color-green)' : 'var(--color-ink-2)',
-                        backgroundColor: '#fff',
+                        backgroundColor: 'var(--color-surface)',
                     }}
                 >
                     {copied ? (
@@ -207,10 +201,10 @@ export default function ProfessorDetailClient({ professorId }: ProfessorDetailCl
                     backgroundColor: 'var(--color-bg-subtle)',
                 }}
             >
-                {/* Avatar */}
+                {/* Avatar — bg shown only for initials fallback; photo shows without colored bg */}
                 <div
                     className="w-16 h-16 flex-shrink-0 flex items-center justify-center text-xl font-bold overflow-hidden"
-                    style={{ borderRadius: 'var(--radius-full)', backgroundColor: avatarBg, color: 'var(--color-ink-2)' }}
+                    style={{ borderRadius: 'var(--radius-full)', backgroundColor: professor.imageUrl ? 'transparent' : getAvatarBg(), color: 'var(--color-ink-2)' }}
                 >
                     {professor.imageUrl ? (
                         <img
@@ -325,7 +319,7 @@ export default function ProfessorDetailClient({ professorId }: ProfessorDetailCl
                                         border: '1px solid var(--color-border)',
                                         borderRadius: 'var(--radius-sm)',
                                         color: 'var(--color-ink-2)',
-                                        backgroundColor: '#fff',
+                                        backgroundColor: 'var(--color-surface)',
                                     }}
                                 >
                                     Login to Review
@@ -404,7 +398,7 @@ export default function ProfessorDetailClient({ professorId }: ProfessorDetailCl
                             style={{
                                 border: '1px solid var(--color-border)',
                                 borderRadius: 'var(--radius-md)',
-                                backgroundColor: '#fff',
+                                backgroundColor: 'var(--color-surface)',
                             }}
                         >
                             <h3 className="text-sm font-bold mb-4" style={{ color: 'var(--color-ink)' }}>
@@ -453,7 +447,7 @@ export default function ProfessorDetailClient({ professorId }: ProfessorDetailCl
                         style={{
                             border: '1px solid var(--color-border)',
                             borderRadius: 'var(--radius-md)',
-                            backgroundColor: '#fff',
+                            backgroundColor: 'var(--color-surface)',
                         }}
                     >
                         <h3 className="text-sm font-bold mb-4" style={{ color: 'var(--color-ink)' }}>

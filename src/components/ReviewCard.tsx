@@ -87,7 +87,7 @@ export default function ReviewCard({ review, currentUserEmail, isAdmin, onDelete
                             style={{
                                 border: '1px solid var(--color-border)',
                                 borderRadius: 'var(--radius-sm)',
-                                backgroundColor: '#fff',
+                                backgroundColor: 'var(--color-surface)',
                                 color: 'var(--color-ink)',
                             }}
                             onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--color-blue)'; }}
@@ -108,7 +108,7 @@ export default function ReviewCard({ review, currentUserEmail, isAdmin, onDelete
                             style={{
                                 border: '1px solid var(--color-border)',
                                 borderRadius: 'var(--radius-sm)',
-                                backgroundColor: '#fff',
+                                backgroundColor: 'var(--color-surface)',
                                 color: 'var(--color-ink)',
                             }}
                             onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--color-blue)'; }}
@@ -142,7 +142,7 @@ export default function ReviewCard({ review, currentUserEmail, isAdmin, onDelete
                         style={{
                             border: '1px solid var(--color-border)',
                             borderRadius: 'var(--radius-sm)',
-                            backgroundColor: '#fff',
+                            backgroundColor: 'var(--color-surface)',
                             color: 'var(--color-ink)',
                         }}
                         onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--color-blue)'; }}
@@ -169,7 +169,7 @@ export default function ReviewCard({ review, currentUserEmail, isAdmin, onDelete
                             border: '1px solid var(--color-border)',
                             borderRadius: 'var(--radius-sm)',
                             color: 'var(--color-ink-2)',
-                            backgroundColor: '#fff',
+                            backgroundColor: 'var(--color-surface)',
                         }}
                     >
                         Cancel
@@ -185,7 +185,7 @@ export default function ReviewCard({ review, currentUserEmail, isAdmin, onDelete
             style={{
                 border: '1px solid var(--color-border)',
                 borderRadius: 'var(--radius-md)',
-                backgroundColor: '#fff',
+                backgroundColor: 'var(--color-surface)',
             }}
         >
             <div className="flex items-start justify-between gap-4">

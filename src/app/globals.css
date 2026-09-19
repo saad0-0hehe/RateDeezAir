@@ -13,10 +13,13 @@
   --color-blue-decorative: #2086BF;
   --color-blue-light:  #E7F1F7;
   --color-green:       #2D6A4F;
+  --color-green-light: #EAF4EE;
   --color-amber:       #9B6E00;
+  --color-amber-light: #F5F0E0;
   --color-red-low:     #B3261E;
+  --color-red-light:   #FBECEB;
 
-  /* Card surface */
+  /* Card surface — sits above the page background */
   --color-surface:     #ffffff;
 
   /* Radius tokens */
@@ -38,10 +41,13 @@
   --color-blue-decorative: #5BB0E5;
   --color-blue-light:  #1C2E3A;
   --color-green:       #4C9B7A;
+  --color-green-light: #1A2E26;
   --color-amber:       #D4A23B;
+  --color-amber-light: #2C2510;
   --color-red-low:     #E05B52;
+  --color-red-light:   #2E1714;
 
-  /* Card surface — slightly elevated above bg */
+  /* Card surface — slightly elevated above --color-bg (#16150F) */
   --color-surface:     #1E1D16;
 }
 
@@ -54,7 +60,7 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Smooth theme transitions — only for colour properties, not layout */
+/* Smooth theme transitions — colour only, not layout */
 html {
   transition: background-color 200ms ease, color 200ms ease;
 }
@@ -64,6 +70,14 @@ html {
 ::-webkit-scrollbar-track { background: var(--color-bg-subtle); }
 ::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: var(--radius-sm); }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-ink-3); }
+
+/* ── Form element color-scheme for dark mode ─────────────────────── */
+/* Tells the browser to use a dark-appropriate autocomplete/caret     */
+.dark input,
+.dark select,
+.dark textarea {
+  color-scheme: dark;
+}
 
 /* ── Hover utility classes ────────────────────────────────────────── */
 
@@ -118,18 +132,6 @@ html {
   border-radius: 1px;
 }
 
-/* ── Dark mode card surface overrides ───────────────────────────── */
-/* Form cards and white-background panels pick up --color-surface */
-.dark .rda-card-row {
-  background-color: var(--color-surface);
-}
-
-/* Form/input cards with explicit white bg — override in dark mode */
-.dark [style*="background-color: #fff"],
-.dark [style*="backgroundColor: '#fff'"] {
-  background-color: var(--color-surface) !important;
-}
-
 /* ── Animations ───────────────────────────────────────────────────── */
 
 @keyframes fadeIn {
@@ -145,35 +147,4 @@ html {
 @keyframes progress {
   from { width: 0%; }
   to   { width: 100%; }
-}
-
-/* ── Dark mode surface overrides ─────────────────────────────────── */
-/* These override hard-coded #fff backgroundColor values in components  */
-/* without needing to touch every TSX file.                             */
-
-.dark input,
-.dark select,
-.dark textarea {
-  background-color: var(--color-surface) !important;
-  color: var(--color-ink) !important;
-  color-scheme: dark;
-}
-
-/* Form card containers (white card wrappers in forms) */
-.dark .rda-card-row,
-.dark form[style],
-.dark [class*="p-6"][style*="background"] {
-  background-color: var(--color-surface);
-}
-
-/* The "Submit Another" button and similar bare white btn surfaces */
-.dark button[style*="background-color: #fff"],
-.dark button[style*="backgroundColor: '#fff'"] {
-  background-color: var(--color-surface) !important;
-  color: var(--color-ink) !important;
-}
-
-/* ReviewCard, ProfessorDetail, FeedbackForm white card panels */
-.dark [style*="backgroundColor: '#fff'"] {
-  background-color: var(--color-surface) !important;
 }

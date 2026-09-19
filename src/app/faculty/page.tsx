@@ -131,7 +131,7 @@ export default function FacultyPage() {
                         style={{
                             border: '2px solid var(--color-border)',
                             borderRadius: 'var(--radius-sm)',
-                            backgroundColor: '#fff',
+                            backgroundColor: 'var(--color-surface)',
                             color: 'var(--color-ink)',
                         }}
                         onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--color-blue)'; }}
@@ -148,7 +148,7 @@ export default function FacultyPage() {
                         style={{
                             border: '1px solid var(--color-border)',
                             borderRadius: 'var(--radius-sm)',
-                            backgroundColor: '#fff',
+                            backgroundColor: 'var(--color-surface)',
                             color: 'var(--color-ink)',
                         }}
                         onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--color-blue)'; }}

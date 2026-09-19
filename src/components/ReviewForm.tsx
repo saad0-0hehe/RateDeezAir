@@ -40,7 +40,7 @@ export default function ReviewForm({ professorId, onSubmit, onCancel }: ReviewFo
         height: '2.5rem',
         border: `1px solid ${active ? (type === 'rating' ? 'var(--color-green)' : 'var(--color-amber)') : 'var(--color-border)'}`,
         borderRadius: 'var(--radius-sm)',
-        backgroundColor: active ? (type === 'rating' ? '#EAF4EE' : '#F5F0E0') : '#fff',
+        backgroundColor: active ? (type === 'rating' ? 'var(--color-green-light)' : 'var(--color-amber-light)') : 'var(--color-surface)',
         color: active ? (type === 'rating' ? 'var(--color-green)' : 'var(--color-amber)') : 'var(--color-ink-3)',
         fontWeight: active ? '700' : '400',
         fontSize: '0.875rem',
@@ -107,7 +107,7 @@ export default function ReviewForm({ professorId, onSubmit, onCancel }: ReviewFo
                         style={{
                             border: `1px solid ${wouldTakeAgain ? 'var(--color-green)' : 'var(--color-border)'}`,
                             borderRadius: 'var(--radius-sm)',
-                            backgroundColor: wouldTakeAgain ? '#EAF4EE' : '#fff',
+                            backgroundColor: wouldTakeAgain ? 'var(--color-blue-light)' : 'var(--color-surface)',
                             color: wouldTakeAgain ? 'var(--color-green)' : 'var(--color-ink-2)',
                         }}
                     >
@@ -120,7 +120,7 @@ export default function ReviewForm({ professorId, onSubmit, onCancel }: ReviewFo
                         style={{
                             border: `1px solid ${!wouldTakeAgain ? 'var(--color-red-low)' : 'var(--color-border)'}`,
                             borderRadius: 'var(--radius-sm)',
-                            backgroundColor: !wouldTakeAgain ? '#FBECEB' : '#fff',
+                            backgroundColor: !wouldTakeAgain ? 'var(--color-red-light)' : 'var(--color-surface)',
                             color: !wouldTakeAgain ? 'var(--color-red-low)' : 'var(--color-ink-2)',
                         }}
                     >
@@ -141,7 +141,7 @@ export default function ReviewForm({ professorId, onSubmit, onCancel }: ReviewFo
                         height: '7rem',
                         border: '1px solid var(--color-border)',
                         borderRadius: 'var(--radius-sm)',
-                        backgroundColor: '#fff',
+                        backgroundColor: 'var(--color-surface)',
                         color: 'var(--color-ink)',
                     }}
                     required
@@ -160,7 +160,7 @@ export default function ReviewForm({ professorId, onSubmit, onCancel }: ReviewFo
                         border: '1px solid var(--color-border)',
                         borderRadius: 'var(--radius-sm)',
                         color: 'var(--color-ink-2)',
-                        backgroundColor: '#fff',
+                        backgroundColor: 'var(--color-surface)',
                     }}
                 >
                     Cancel

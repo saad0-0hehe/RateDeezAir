@@ -84,7 +84,7 @@ export default function FeedbackForm() {
                         border: '1px solid var(--color-border)',
                         borderRadius: 'var(--radius-sm)',
                         color: 'var(--color-ink-2)',
-                        backgroundColor: '#fff',
+                        backgroundColor: 'var(--color-surface)',
                     }}
                 >
                     Submit Another
@@ -115,7 +115,7 @@ export default function FeedbackForm() {
                 style={{
                     border: '1px solid var(--color-border)',
                     borderRadius: 'var(--radius-sm)',
-                    backgroundColor: '#fff',
+                    backgroundColor: 'var(--color-surface)',
                     color: 'var(--color-ink)',
                 }}
                 required

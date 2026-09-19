@@ -119,7 +119,7 @@ export default function AddFacultyForm() {
                         border: '1px solid var(--color-border)',
                         borderRadius: 'var(--radius-sm)',
                         color: 'var(--color-ink-2)',
-                        backgroundColor: '#fff',
+                        backgroundColor: 'var(--color-surface)',
                     }}
                 >
                     Submit Another
@@ -135,7 +135,7 @@ export default function AddFacultyForm() {
             style={{
                 border: '1px solid var(--color-border)',
                 borderRadius: 'var(--radius-md)',
-                backgroundColor: '#fff',
+                backgroundColor: 'var(--color-surface)',
             }}
         >
             <div className="pb-3" style={{ borderBottom: '1px solid var(--color-border)' }}>
@@ -162,7 +162,7 @@ export default function AddFacultyForm() {
                     style={{
                         border: '1px solid var(--color-border)',
                         borderRadius: 'var(--radius-sm)',
-                        backgroundColor: '#fff',
+                        backgroundColor: 'var(--color-surface)',
                         color: 'var(--color-ink)',
                     }}
                     required
@@ -185,7 +185,7 @@ export default function AddFacultyForm() {
                     style={{
                         border: '1px solid var(--color-border)',
                         borderRadius: 'var(--radius-sm)',
-                        backgroundColor: '#fff',
+                        backgroundColor: 'var(--color-surface)',
                         color: department ? 'var(--color-ink)' : 'var(--color-ink-3)',
                     }}
                     required
@@ -216,7 +216,7 @@ export default function AddFacultyForm() {
                     style={{
                         border: '1px solid var(--color-border)',
                         borderRadius: 'var(--radius-sm)',
-                        backgroundColor: '#fff',
+                        backgroundColor: 'var(--color-surface)',
                         color: 'var(--color-ink)',
                     }}
                     maxLength={100}
@@ -240,7 +240,7 @@ export default function AddFacultyForm() {
                     style={{
                         border: '1px solid var(--color-border)',
                         borderRadius: 'var(--radius-sm)',
-                        backgroundColor: '#fff',
+                        backgroundColor: 'var(--color-surface)',
                         color: 'var(--color-ink)',
                     }}
                     onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--color-blue)'; }}
@@ -263,7 +263,7 @@ export default function AddFacultyForm() {
                     style={{
                         border: '1px solid var(--color-border)',
                         borderRadius: 'var(--radius-sm)',
-                        backgroundColor: '#fff',
+                        backgroundColor: 'var(--color-surface)',
                         color: 'var(--color-ink)',
                     }}
                     maxLength={200}

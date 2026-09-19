@@ -6,20 +6,6 @@ interface FacultyCardProps {
     stats?: { rating: number; difficulty: number; count: number };
 }
 
-// Deterministic avatar background from professor id — no gradients
-function getAvatarColor(id: string): string {
-    const palette = ['#D9EAF4', '#D6EAE0', '#F4EDD9', '#EAD9F4', '#F4D9D9', '#D9F4F0'];
-    let hash = 0;
-    for (let i = 0; i < id.length; i++) {
-        hash = (hash * 31 + id.charCodeAt(i)) & 0xffffffff;
-    }
-    return palette[Math.abs(hash) % palette.length];
-}
-
-function getAvatarTextColor(bg: string): string {
-    // All palette colors are light, so dark ink is always fine
-    return 'var(--color-ink-2)';
-}
 
 function getRatingStyle(rating: number): { color: string } {
     if (rating >= 4) return { color: 'var(--color-green)' };
@@ -29,18 +15,16 @@ function getRatingStyle(rating: number): { color: string } {
 }
 
 export default function FacultyCard({ professor, stats = { rating: 0, difficulty: 0, count: 0 } }: FacultyCardProps) {
-    const avatarBg = getAvatarColor(professor.id);
-    const avatarText = getAvatarTextColor(avatarBg);
     const initials = professor.name.split(' ').map(n => n[0]).join('').slice(0, 2);
 
     return (
         <Link href={`/faculty/${professor.id}`} className="block group">
             <div className="rda-card-row flex items-center gap-4 px-4 py-3.5">
 
-                {/* Avatar — solid hash-based color, no gradient */}
+                {/* Avatar — bg shown only for initials fallback */}
                 <div
                     className="flex-shrink-0 w-10 h-10 flex items-center justify-center text-sm font-bold overflow-hidden"
-                    style={{ borderRadius: 'var(--radius-full)', backgroundColor: avatarBg, color: avatarText }}
+                    style={{ borderRadius: 'var(--radius-full)', backgroundColor: professor.imageUrl ? 'transparent' : 'var(--color-bg-subtle)', color: 'var(--color-ink-2)' }}
                 >
                     {professor.imageUrl ? (
                         <img
